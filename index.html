@@ -62,10 +62,10 @@ function downloadExercise(btn) {
     '<div class="header"><h1>Kazeem Badrudeen</h1><p>Mental Health Recreation Coordinator | Wellness Exercises</p></div>' +
     '<h2>' + title + '</h2>' + body +
     '<div class="footer">kazeembadrudeen-lang.github.io/Kazeem-</div></body></html>';
-  var blob = new Blob([html], {type: 'text/html'});
+  var blob = new Blob(['\ufeff', html], {type: 'application/msword'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = title.replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '.html';
+  a.download = title.replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '.doc';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
