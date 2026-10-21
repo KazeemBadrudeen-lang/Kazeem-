@@ -502,6 +502,12 @@ document.querySelector('form[name="wellness-signup"]').addEventListener('submit'
     document.getElementById('wellness-content').style.display = 'block';
   });
 });
+
+// Preview link: ?preview=kazeem unlocks the exercises without payment
+if (new URLSearchParams(window.location.search).get('preview') === 'kazeem') {
+  document.getElementById('wellness-gate').style.display = 'none';
+  document.getElementById('wellness-content').style.display = 'block';
+}
 </script>
 
 <!-- ============ DOCUMENTS ============ -->
