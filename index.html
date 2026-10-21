@@ -61,6 +61,9 @@ function downloadExercise(btn) {
     '.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;text-align:center;color:#888;font-size:0.85rem}</style></head><body>' +
     '<div class="header"><h1>Kazeem Badrudeen</h1><p>Mental Health Recreation Coordinator | Wellness Exercises</p></div>' +
     '<h2>' + title + '</h2>' + body +
+    '<div style="margin-top:30px"><h3 style="color:#1a6b4a">Your Response</h3>' +
+    '<div style="border:1px solid #ccc;min-height:300px;padding:15px;border-radius:4px">' +
+    '<p style="color:#aaa">Write your reflections here...</p><br><br><br><br><br><br><br><br><br><br></div></div>' +
     '<div class="footer">kazeembadrudeen-lang.github.io/Kazeem-</div></body></html>';
   var blob = new Blob(['\ufeff', html], {type: 'application/msword'});
   var a = document.createElement('a');
