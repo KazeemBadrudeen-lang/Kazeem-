@@ -174,9 +174,8 @@ function downloadExercise(btn) {
     </div>
     
     <div id="wellness-gate" style="max-width:500px;margin:2rem auto;text-align:center">
-      <a href="https://payhip.com/b/N0pIC" class="btn" style="display:inline-block;margin-bottom:0.75rem;font-size:1.1rem;padding:0.9rem 1.75rem">Get the Exercises on Payhip — $30</a>
-      <p style="font-size:0.9rem;color:var(--muted);margin-bottom:1rem">Secure checkout. Instant download after purchase.</p>
-      <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem">Prefer PayPal? <a href="https://paypal.me/Kazeembadrudeen/30">Pay $30 directly</a>, then enter your email below to unlock the exercises here.</p>
+      <a href="https://paypal.me/Kazeembadrudeen/30" class="btn" style="display:inline-block;margin-bottom:0.75rem;font-size:1.1rem;padding:0.9rem 1.75rem">Get the Exercises — $30</a>
+      <p style="font-size:0.9rem;color:var(--muted);margin-bottom:1rem">Secure checkout via PayPal. After paying, enter your email below to unlock the exercises here.</p>
       <form name="wellness-signup" method="POST" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="wellness-signup">
         <p style="display:none"><label>Don't fill this out: <input name="bot-field"></label></p>
@@ -200,8 +199,19 @@ function downloadExercise(btn) {
         <li>A practical, no-pressure approach: small steps over perfect routines</li>
       </ul>
       <p style="text-align:center;margin-top:1rem"><strong>Price: $20</strong></p>
-      <p style="text-align:center"><a href="https://payhip.com/b/nUmHV" class="btn" style="display:inline-block;font-size:1.1rem;padding:0.9rem 1.75rem">Get the Workbook on Payhip — $20</a></p>
-      <p style="font-size:0.9rem;color:var(--muted);text-align:center">Secure checkout. Instant download after purchase.</p>
+      <p style="text-align:center"><a href="https://paypal.me/Kazeembadrudeen/20" class="btn" style="display:inline-block;font-size:1.1rem;padding:0.9rem 1.75rem">Get the Workbook — $20</a></p>
+      <p style="font-size:0.9rem;color:var(--muted);text-align:center">Secure checkout via PayPal.</p>
+      <div id="workbook-gate" style="max-width:400px;margin:1.5rem auto 0;text-align:center">
+        <p style="font-size:0.9rem;color:var(--muted)">Paid? Enter your email to get your download link.</p>
+        <form id="workbook-form" style="display:flex;gap:0.5rem">
+          <input type="email" id="workbook-email" placeholder="Your email address" required style="flex:1;padding:0.75rem;border:1px solid var(--line);border-radius:var(--radius);font-size:1rem">
+          <button type="submit" class="btn">Get Download</button>
+        </form>
+      </div>
+      <div id="workbook-download" style="display:none;max-width:400px;margin:1.5rem auto 0;text-align:center">
+        <p><strong>Thank you! Your workbook is ready:</strong></p>
+        <p><button id="workbook-dl-btn" class="btn">Download the Workbook (PDF)</button></p>
+      </div>
     </div>
 
     <div id="wellness-content" style="display:none" aria-live="polite">
@@ -581,6 +591,48 @@ if (new URLSearchParams(window.location.search).get('preview') === 'kazeem') {
   document.getElementById('wellness-gate').style.display = 'none';
   document.getElementById('wellness-content').style.display = 'block';
 }
+
+// Workbook download gate: paid via PayPal.Me, enter email to reveal download
+if (localStorage.getItem('workbook-access') === 'granted') {
+  document.getElementById('workbook-gate').style.display = 'none';
+  document.getElementById('workbook-download').style.display = 'block';
+}
+document.getElementById('workbook-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  localStorage.setItem('workbook-access', 'granted');
+  document.getElementById('workbook-gate').style.display = 'none';
+  document.getElementById('workbook-download').style.display = 'block';
+});
+
+// Decode the base64 PDF and trigger a real file download
+document.getElementById('workbook-dl-btn').addEventListener('click', function() {
+  var btn = this;
+  btn.textContent = 'Preparing download...';
+  btn.disabled = true;
+  fetch('assets/everyday-wellness-workbook.pdf.b64')
+    .then(function(r) { return r.text(); })
+    .then(function(b64) {
+      var binary = atob(b64.trim());
+      var len = binary.length;
+      var bytes = new Uint8Array(len);
+      for (var i = 0; i < len; i++) { bytes[i] = binary.charCodeAt(i); }
+      var blob = new Blob([bytes], {type: 'application/pdf'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Everyday-Wellness-Workbook.pdf';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function() { URL.revokeObjectURL(url); }, 4000);
+      btn.textContent = 'Download the Workbook (PDF)';
+      btn.disabled = false;
+    })
+    .catch(function() {
+      btn.textContent = 'Download failed — try again';
+      btn.disabled = false;
+    });
+});
 </script>
 
 <!-- ============ DOCUMENTS ============ -->
