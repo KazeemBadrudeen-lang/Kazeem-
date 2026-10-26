@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="A hand-picked directory of 100 community resources in Calgary, Alberta: crisis lines, mental health, disability supports, housing, food, health care, and more." />
+    <link rel="icon" href="data:," />
+    <title>100 Best Resources in Calgary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700;8..60,900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f4f6f4;
+        --surface: #ffffff;
+        --surface-2: #eaefec;
+        --ink: #182420;
+        --ink-soft: #43534c;
+        --line: #d3dcd6;
+        --accent: #0d5c50;
+        --accent-ink: #ffffff;
+        --accent-soft: #dcefe9;
+        --crisis-bg: #7c2115;
+        --crisis-ink: #fff6f2;
+        --gold: #b07d1e;
+        --chip: #eef3f0;
+        --shadow: 0 1px 2px rgba(20, 40, 34, 0.06), 0 8px 24px rgba(20, 40, 34, 0.06);
+        --radius: 14px;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1311;
+          --surface: #161e1b;
+          --surface-2: #1d2824;
+          --ink: #e9efec;
+          --ink-soft: #a9bab2;
+          --line: #2b3a34;
+          --accent: #63c7b2;
+          --accent-ink: #0b1512;
+          --accent-soft: #17352e;
+          --crisis-bg: #5f1a10;
+          --crisis-ink: #ffe9e2;
+          --gold: #d9a94e;
+          --chip: #1d2824;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        * { transition: none !important; }
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+        font-size: 17px;
+        line-height: 1.55;
+      }
+      a { color: var(--accent); }
+      a:focus-visible, button:focus-visible, input:focus-visible {
+        outline: 3px solid var(--gold);
+        outline-offset: 2px;
+      }
+      .wrap { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+
+      /* ---------- Header ---------- */
+      header.site {
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+      }
+      .site-inner { padding: 44px 0 30px; }
+      .site-inner h1 {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 900;
+        font-size: clamp(2.1rem, 5.4vw, 3.6rem);
+        line-height: 1.05;
+        letter-spacing: -0.01em;
+        margin: 0 0 14px;
+        max-width: 16ch;
+      }
+      .site-inner h1 .num { color: var(--accent); }
+      .lede {
+        font-size: 1.13rem;
+        color: var(--ink-soft);
+        max-width: 62ch;
+        margin: 0 0 20px;
+      }
+      .meta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 22px;
+        font-size: 0.95rem;
+        color: var(--ink-soft);
+        border-top: 1px solid var(--line);
+        padding-top: 16px;
+      }
+      .meta-row strong { color: var(--ink); }
+
+      /* ---------- Crisis strip ---------- */
+      .crisis {
+        background: var(--crisis-bg);
+        color: var(--crisis-ink);
+      }
+      .crisis-inner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 28px;
+        padding: 16px 0;
+      }
+      .crisis h2 {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 1.25rem;
+        margin: 0;
+      }
+      .crisis p { margin: 0; font-size: 1rem; }
+      .crisis a {
+        color: var(--crisis-ink);
+        font-weight: 700;
+        text-decoration-thickness: 2px;
+        white-space: nowrap;
+      }
+
+      /* ---------- Toolbar ---------- */
+      .toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: var(--bg);
+        border-bottom: 1px solid var(--line);
+        padding: 14px 0;
+      }
+      .toolbar-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+      .search-box {
+        flex: 1 1 260px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--surface);
+        border: 1.5px solid var(--line);
+        border-radius: 999px;
+        padding: 10px 18px;
+      }
+      .search-box svg { flex: none; color: var(--ink-soft); }
+      .search-box input {
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        font: inherit;
+        font-size: 1rem;
+        width: 100%;
+        outline: none;
+      }
+      .search-box input::placeholder { color: var(--ink-soft); }
+      .count-note { font-size: 0.95rem; color: var(--ink-soft); white-space: nowrap; }
+      .count-note strong { color: var(--ink); }
+      .cat-nav-band { padding: 14px 0 2px; }
+      .cat-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .cat-nav a {
+        text-decoration: none;
+        background: var(--chip);
+        color: var(--ink);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+      .cat-nav a:hover { background: var(--accent-soft); border-color: var(--accent); }
+      .cat-nav a .n { color: var(--accent); font-weight: 700; }
+
+      /* ---------- Sections ---------- */
+      main { padding: 10px 0 30px; }
+      section.cat { padding: 34px 0 6px; scroll-margin-top: 84px; }
+      .cat-head {
+        display: flex;
+        align-items: baseline;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+      .cat-head .range {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 700;
+        color: var(--accent);
+        font-size: 1rem;
+        letter-spacing: 0.04em;
+      }
+      .cat-head h2 {
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 700;
+        font-size: clamp(1.5rem, 3.4vw, 2rem);
+        line-height: 1.15;
+        margin: 0;
+      }
+      .cat-intro { color: var(--ink-soft); max-width: 68ch; margin: 0 0 20px; }
+
+      .grid {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 20px 20px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .card-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .badge {
+        flex: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-family: "Source Serif 4", Georgia, serif;
+        font-weight: 900;
+        font-size: 1.05rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .card h3 {
+        font-size: 1.12rem;
+        line-height: 1.3;
+        margin: 2px 0 0;
+        font-weight: 700;
+      }
+      .card p { margin: 0; color: var(--ink-soft); font-size: 0.98rem; flex: 1; }
+      .card-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 18px;
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+        margin-top: 4px;
+        font-size: 0.97rem;
+      }
+      .card-links a {
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .card-links a:hover { text-decoration: underline; }
+      .card-links svg { flex: none; }
+      .no-phone { color: var(--ink-soft); font-size: 0.92rem; }
+
+      .empty-state {
+        display: none;
+        background: var(--surface);
+        border: 1px dashed var(--line);
+        border-radius: var(--radius);
+        padding: 34px 24px;
+        text-align: center;
+        color: var(--ink-soft);
+        margin: 30px 0;
+      }
+      .empty-state.visible { display: block; }
+      .empty-state strong { color: var(--ink); display: block; font-size: 1.1rem; margin-bottom: 6px; }
+
+      /* ---------- Footer ---------- */
+      footer.site {
+        border-top: 1px solid var(--line);
+        background: var(--surface);
+        margin-top: 40px;
+      }
+      .footer-inner { padding: 30px 0 40px; color: var(--ink-soft); font-size: 0.97rem; }
+      .footer-inner h2 {
+        font-family: "Source Serif 4", Georgia, serif;
+        color: var(--ink);
+        font-size: 1.3rem;
+        margin: 0 0 10px;
+      }
+      .footer-inner p { max-width: 70ch; margin: 0 0 10px; }
+      .back-top { font-weight: 700; }
+
+      @media (max-width: 560px) {
+        .grid { grid-template-columns: 1fr; }
+        .site-inner { padding: 32px 0 24px; }
+        section.cat { scroll-margin-top: 96px; }
+      }
+      @media print {
+        .toolbar, .crisis { position: static; }
+        .toolbar { display: none; }
+        .card { break-inside: avoid; box-shadow: none; }
+        body { background: #fff; }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site">
+      <div class="wrap site-inner">
+        <h1><span class="num">100</span> Best Resources in Calgary</h1>
+        <p class="lede">
+          A practical directory of the services Calgarians actually turn to: crisis lines,
+          mental health and counselling, disability supports, housing and shelters, food,
+          health care, family and seniors services, newcomer supports, and help with work,
+          money, and the law. Every entry is a real Calgary or Alberta service with a phone
+          number and website where one is publicly listed.
+        </p>
+        <div class="meta-row">
+          <span><strong>100</strong> resources</span>
+          <span><strong>14</strong> categories</span>
+          <span>Compiled <strong>October 2026</strong></span>
+          <span>Not sure where to start? Call <a href="tel:211"><strong>2-1-1</strong></a> — free, confidential, 24/7</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="crisis" role="region" aria-label="If you are in crisis">
+      <div class="wrap crisis-inner">
+        <h2>In crisis right now?</h2>
+        <p>
+          Emergency: <a href="tel:911">Call 911</a> &nbsp;·&nbsp;
+          Suicide Crisis Helpline: <a href="tel:988">Call or text 9-8-8</a> &nbsp;·&nbsp;
+          Distress Centre Calgary: <a href="tel:+14032664357">403-266-4357</a> &nbsp;·&nbsp;
+          Kids Help Phone: <a href="tel:+18006686868">1-800-668-6868</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="wrap">
+        <div class="toolbar-row">
+          <label class="search-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+            <input id="search" type="search" placeholder="Search resources — try “food”, “counselling”, “shelter”…" aria-label="Search resources" />
+          </label>
+          <span class="count-note" id="countNote" role="status">Showing <strong>100</strong> of 100 resources</span>
+        </div>
+      </div>
+    </div>
+    <div class="cat-nav-band">
+      <div class="wrap">
+        <nav class="cat-nav" aria-label="Categories">
+          <a href="#crisis-lines">Crisis Lines <span class="n">1–10</span></a>
+          <a href="#mental-health">Mental Health <span class="n">11–21</span></a>
+          <a href="#addiction">Addiction &amp; Recovery <span class="n">22–28</span></a>
+          <a href="#disability">Disability <span class="n">29–39</span></a>
+          <a href="#housing">Housing &amp; Shelters <span class="n">40–47</span></a>
+          <a href="#food">Food &amp; Basics <span class="n">48–55</span></a>
+          <a href="#health-care">Health Care <span class="n">56–61</span></a>
+          <a href="#families">Children &amp; Families <span class="n">62–69</span></a>
+          <a href="#seniors">Seniors <span class="n">70–74</span></a>
+          <a href="#newcomers">Newcomers <span class="n">75–79</span></a>
+          <a href="#indigenous">Indigenous-Led <span class="n">80–84</span></a>
+          <a href="#employment">Work &amp; Money <span class="n">85–91</span></a>
+          <a href="#women">Women &amp; Safety <span class="n">92–95</span></a>
+          <a href="#community">Community &amp; Legal <span class="n">96–100</span></a>
+        </nav>
+      </div>
+    </div>
+
+    <main class="wrap" id="directory">
+
+      <!-- 1. CRISIS LINES -->
+      <section class="cat" id="crisis-lines" aria-labelledby="h-crisis">
+        <div class="cat-head"><span class="range">01 — 10</span><h2 id="h-crisis">Crisis Lines &amp; Helplines</h2></div>
+        <p class="cat-intro">Free, confidential help lines that answer around the clock. If you only save a few numbers from this page, save these.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">1</span><h3>211 Alberta</h3></div>
+            <p>Free, confidential, 24/7 information and referral to community, social, health, and government services across Alberta.</p>
+            <div class="card-links"><a href="tel:211">Call 2-1-1</a><a href="https://ab.211.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">2</span><h3>Distress Centre Calgary</h3></div>
+            <p>Free 24-hour crisis support by phone, text, and chat for Calgary and Southern Alberta, plus crisis counselling and 211 referrals.</p>
+            <div class="card-links"><a href="tel:+14032664357">Call 403-266-4357</a><a href="http://www.distresscentre.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">3</span><h3>9-8-8 Suicide Crisis Helpline</h3></div>
+            <p>Canada's free, bilingual, 24/7 suicide prevention and emotional distress line, reachable by call or text.</p>
+            <div class="card-links"><a href="tel:988">Call or text 9-8-8</a><a href="https://988.ca/about-us" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">4</span><h3>Kids Help Phone</h3></div>
+            <p>Free, confidential, 24/7 counselling and crisis support for children, youth, and young adults across Canada, by phone, text, and chat.</p>
+            <div class="card-links"><a href="tel:+18006686868">Call 1-800-668-6868</a><a href="https://kidshelpphone.ca/our-e-mental-health-services/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">5</span><h3>Hope for Wellness Helpline</h3></div>
+            <p>Free, 24/7, culturally competent counselling and crisis intervention for First Nations, Inuit, and Métis peoples across Canada, by phone and online chat.</p>
+            <div class="card-links"><a href="tel:+18552423310">Call 1-855-242-3310</a><a href="https://hopeforwellness.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">6</span><h3>Health Link Alberta</h3></div>
+            <p>Free 24/7 telephone health advice from registered nurses and other health professionals, anywhere in Alberta.</p>
+            <div class="card-links"><a href="tel:811">Call 811</a><a href="https://myhealth.alberta.ca/pages/emergency-phone-numbers.aspx" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">7</span><h3>Alberta Mental Health Help Line</h3></div>
+            <p>Free, confidential, 24/7 support, information, and referrals for Albertans experiencing mental health concerns.</p>
+            <div class="card-links"><a href="tel:+18773032642">Call 1-877-303-2642</a><a href="https://myhealth.alberta.ca/pages/emergency-phone-numbers.aspx" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">8</span><h3>Alberta Addiction Helpline</h3></div>
+            <p>Free, confidential, 24/7 advice and referral for alcohol, tobacco, drug, and gambling concerns — for the person affected or someone worried about them.</p>
+            <div class="card-links"><a href="tel:+18663322322">Call 1-866-332-2322</a><a href="https://myhealth.alberta.ca/pages/emergency-phone-numbers.aspx" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">9</span><h3>ConnecTeen</h3></div>
+            <p>Free, confidential peer support for Calgary youth, run by Distress Centre Calgary, by phone, text, and chat.</p>
+            <div class="card-links"><a href="tel:+14032648336">Call 403-264-8336</a><a href="https://www.calgaryconnecteen.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">10</span><h3>Family Violence Info Line</h3></div>
+            <p>Confidential support, information, and referrals for anyone experiencing or concerned about family violence in Alberta, by call, text, or chat.</p>
+            <div class="card-links"><a href="tel:+17803101818">Call 780-310-1818</a><a href="https://www.alberta.ca/get-help-and-support" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 2. MENTAL HEALTH -->
+      <section class="cat" id="mental-health" aria-labelledby="h-mh">
+        <div class="cat-head"><span class="range">11 — 21</span><h2 id="h-mh">Mental Health &amp; Counselling</h2></div>
+        <p class="cat-intro">Counselling, peer support, and community mental health programs in Calgary, including low-cost and no-waitlist options.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">11</span><h3>CMHA Calgary</h3></div>
+            <p>Community-based mental health education, peer support, counselling navigation, and Recovery College courses from the Canadian Mental Health Association's Calgary region.</p>
+            <div class="card-links"><a href="tel:+14032971700">Call 403-297-1700</a><a href="http://www.cmha.calgary.ab.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">12</span><h3>Calgary Counselling Centre</h3></div>
+            <p>Affordable, sliding-scale individual, couple, and family counselling with no waitlist, and no one turned away for inability to pay.</p>
+            <div class="card-links"><a href="tel:+18338274229">Call 833-827-4229</a><a href="https://calgarycounselling.com/contact-us/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">13</span><h3>Wood's Homes</h3></div>
+            <p>Children's mental health centre providing 24/7 crisis counselling and treatment, plus family, foster care, and youth services in Calgary and area.</p>
+            <div class="card-links"><a href="tel:+14032999699">Call 403-299-9699</a><a href="https://woodshomes.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">14</span><h3>Elements Calgary Mental Health Centre</h3></div>
+            <p>Integrated mental health, recreation, education, and skill-development services for adults living with mental illness in Calgary.</p>
+            <div class="card-links"><a href="tel:+14032638383">Call 403-263-8383</a><a href="https://elementscmhc.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">15</span><h3>Carya</h3></div>
+            <p>Low-barrier counselling, family, parenting, and older-adult programs that strengthen relationships, mental health, and community connection.</p>
+            <div class="card-links"><a href="tel:+14032699888">Call 403-269-9888</a><a href="http://caryacalgary.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">16</span><h3>Recovery College Calgary</h3></div>
+            <p>Free, short-term mental health and recovery courses and discussion groups, led with peer support, through CMHA Calgary.</p>
+            <div class="card-links"><a href="tel:+14032971700">Call 403-297-1700</a><a href="https://recoverycollegecalgary.ca/welcome-centre/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">17</span><h3>Mood Disorders Association of Alberta</h3></div>
+            <p>Peer support groups, education, and resources for people living with mood disorders and their families.</p>
+            <div class="card-links"><a href="tel:+14032637408">Call 403-263-7408</a><a href="https://mdac.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">18</span><h3>Centre for Suicide Prevention</h3></div>
+            <p>Education, training, and resources on suicide prevention for individuals, workplaces, and communities, based in Calgary.</p>
+            <div class="card-links"><a href="tel:+14032453900">Call 403-245-3900</a><a href="https://suicideinfo.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">19</span><h3>Access Mental Health (AHS)</h3></div>
+            <p>Free, non-urgent navigation service that connects Calgarians to the right public or community addiction and mental health service.</p>
+            <div class="card-links"><a href="tel:+14039431500">Call 403-943-1500</a><a href="https://www.albertahealthservices.ca/services/page11443.aspx" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">20</span><h3>Community Connect YYC</h3></div>
+            <p>Affordable, barrier-free counselling in person, by phone, or online, with 24/7 booking.</p>
+            <div class="card-links"><span class="no-phone">Book online</span><a href="https://communityconnectyyc.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">21</span><h3>Kindred</h3></div>
+            <p>Counselling, financial coaching, and parenting support for families in distress — formerly Catholic Family Service.</p>
+            <div class="card-links"><span class="no-phone">See website for contact options</span><a href="https://www.kindred.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 3. ADDICTION -->
+      <section class="cat" id="addiction" aria-labelledby="h-add">
+        <div class="cat-head"><span class="range">22 — 28</span><h2 id="h-add">Addiction &amp; Recovery</h2></div>
+        <p class="cat-intro">Detox, residential treatment, outpatient care, and recovery housing in Calgary for people working through substance use.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">22</span><h3>Alpha House Calgary</h3></div>
+            <p>Shelter, detox, outreach (the DOAP Team), and Housing First supports for people experiencing homelessness and substance use.</p>
+            <div class="card-links"><a href="tel:+14032347388">Call 403-234-7388</a><a href="http://www.alphahousecalgary.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">23</span><h3>Fresh Start Recovery Centre</h3></div>
+            <p>Residential addiction treatment at its Calgary site for men, plus post-treatment housing and alumni support.</p>
+            <div class="card-links"><a href="tel:+14033872666">Call 403-387-2666</a><a href="http://freshstartrecovery.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">24</span><h3>Aventa Centre of Excellence for Women with Addictions</h3></div>
+            <p>Residential and outpatient addiction treatment for women, at no cost to Alberta residents with an Alberta Health Care card.</p>
+            <div class="card-links"><a href="tel:+14032459050">Call 403-245-9050</a><a href="http://www.aventa.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">25</span><h3>Calgary Dream Centre</h3></div>
+            <p>Full continuum of addiction recovery programs, transitional housing, and alumni community support.</p>
+            <div class="card-links"><a href="tel:+14032435598">Call 403-243-5598</a><a href="https://calgarydreamcentre.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">26</span><h3>Rapid Access Addiction Medicine (AHS)</h3></div>
+            <p>Comprehensive medical and psychosocial treatment for substance-use and behavioural addictions, offered province-wide.</p>
+            <div class="card-links"><a href="tel:+14033675000">Call 403-367-5000</a><a href="https://www.albertahealthservices.ca/findhealth/service.aspx?id=1060378" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">27</span><h3>Freedom's Path Recovery Society</h3></div>
+            <p>Residential addiction recovery program in Calgary.</p>
+            <div class="card-links"><a href="tel:+14037016416">Call 403-701-6416</a><a href="http://www.freedomspathrecoverysociety.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">28</span><h3>Recovery Calgary</h3></div>
+            <p>Addiction treatment and recovery services in downtown Calgary.</p>
+            <div class="card-links"><a href="tel:+14038294945">Call 403-829-4945</a><a href="https://www.recoverycalgary.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 4. DISABILITY -->
+      <section class="cat" id="disability" aria-labelledby="h-dis">
+        <div class="cat-head"><span class="range">29 — 39</span><h2 id="h-dis">Disability &amp; Accessibility</h2></div>
+        <p class="cat-intro">Advocacy, community inclusion, employment, and income supports for Calgarians with disabilities and their families.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">29</span><h3>Vecova</h3></div>
+            <p>Disability services, housing, employment, and community inclusion supports, including the Vecova Hub in Calgary's Beltline.</p>
+            <div class="card-links"><a href="tel:+14032841121">Call 403-284-1121</a><a href="https://vecova.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">30</span><h3>Developmental Disabilities Resource Centre (DDRC)</h3></div>
+            <p>Programs and resources for children and adults with developmental disabilities, their families, and communities.</p>
+            <div class="card-links"><a href="tel:+14032403111">Call 403-240-3111</a><a href="http://www.ddrc.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">31</span><h3>Calgary Scope Society</h3></div>
+            <p>Community, residential, and employment supports for people with developmental disabilities.</p>
+            <div class="card-links"><a href="tel:+14035090200">Call 403-509-0200</a><a href="https://www.scopesociety.ca" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">32</span><h3>CNIB</h3></div>
+            <p>Programs, peer support, and advocacy empowering people impacted by blindness and sight loss to live independently, with a Calgary hub.</p>
+            <div class="card-links"><a href="tel:+18005632642">Call 1-800-563-2642</a><a href="https://www.cnib.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">33</span><h3>Independent Living Resource Centre of Calgary</h3></div>
+            <p>Referrals, training, peer support, and programs helping people with disabilities reach their own level of independence, including AISH and PDD application help.</p>
+            <div class="card-links"><a href="tel:+14032636880">Call 403-263-6880</a><a href="https://www.ilrcc.ab.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">34</span><h3>Voice of Albertans with Disabilities</h3></div>
+            <p>Provincial advocacy, information, and navigation support for Albertans with disabilities.</p>
+            <div class="card-links"><a href="tel:+17804889088">Call 780-488-9088</a><a href="https://vadsociety.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">35</span><h3>Chrysalis</h3></div>
+            <p>Personalised vocational, employment, life-management, and day programs for adults with disabilities.</p>
+            <div class="card-links"><a href="tel:+14032581501">Call 403-258-1501</a><a href="http://chrysalis.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">36</span><h3>AISH — Assured Income for the Severely Handicapped</h3></div>
+            <p>Government of Alberta financial and health benefits for adult Albertans with a permanent disability that severely impairs their ability to earn a living.</p>
+            <div class="card-links"><a href="tel:+18776449992">Call 1-877-644-9992</a><a href="https://www.alberta.ca/contact-aish-and-adap" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">37</span><h3>Inclusion Alberta</h3></div>
+            <p>Advocacy and support for inclusive lives in community for children and adults with developmental disabilities and their families.</p>
+            <div class="card-links"><a href="tel:+14037170361">Call 403-717-0361</a><a href="http://www.inclusionalberta.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">38</span><h3>National accessArts Centre</h3></div>
+            <p>Studio assistance, workshops, and programs supporting artists living with developmental and/or physical disabilities.</p>
+            <div class="card-links"><a href="tel:+14032533174">Call 403-253-3174</a><a href="https://accessarts.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">39</span><h3>Vantage Enterprises</h3></div>
+            <p>Calgary disability supports including community access, home living, and respite services.</p>
+            <div class="card-links"><a href="tel:+14032769403">Call 403-276-9403</a><a href="http://www.vantageltd.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 5. HOUSING -->
+      <section class="cat" id="housing" aria-labelledby="h-hou">
+        <div class="cat-head"><span class="range">40 — 47</span><h2 id="h-hou">Housing, Shelters &amp; Homelessness</h2></div>
+        <p class="cat-intro">Emergency shelter, housing navigation, and affordable housing for Calgarians without a safe place to stay tonight, or working to keep one.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">40</span><h3>Calgary Drop-In Centre</h3></div>
+            <p>Low-barrier, housing-focused emergency shelter open 24/7, with meals, hygiene services, day drop-in, and housing supports for adults 18+.</p>
+            <div class="card-links"><a href="tel:+14032663600">Call 403-266-3600</a><a href="https://calgarydropin.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">41</span><h3>The Mustard Seed</h3></div>
+            <p>Emergency shelter, food, clothing, showers, and housing, employment, and counselling supports for adults experiencing homelessness and poverty.</p>
+            <div class="card-links"><a href="tel:+18334484673">Call 833-448-4673</a><a href="https://theseed.ca/emergency-shelter" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">42</span><h3>Inn from the Cold</h3></div>
+            <p>Emergency family shelter plus prevention, diversion, and housing-stability support for families with children in Calgary.</p>
+            <div class="card-links"><a href="tel:+14032638384">Call 403-263-8384</a><a href="https://innfromthecold.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">43</span><h3>SORCe</h3></div>
+            <p>Walk-in collaborative where multiple agencies connect people experiencing homelessness to housing, health, justice, financial, and ID services in one place.</p>
+            <div class="card-links"><a href="tel:+15877795015">Call 587-779-5015</a><a href="https://distresscentre.com/sorce/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">44</span><h3>Calgary Homeless Foundation</h3></div>
+            <p>System planner and funder coordinating Calgary's homelessness response and Housing First efforts.</p>
+            <div class="card-links"><a href="tel:+14032376456">Call 403-237-6456</a><a href="http://calgaryhomeless.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">45</span><h3>YW Calgary — Sheriff King Home</h3></div>
+            <p>Short-stay crisis shelter, basic needs, and domestic abuse counselling for women and their children leaving domestic abuse.</p>
+            <div class="card-links"><a href="tel:+14032660707">Call 403-266-0707</a><a href="http://www.ywcalgary.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">46</span><h3>Salvation Army — Centre of Hope</h3></div>
+            <p>Emergency shelter and transitional housing for adult men in Calgary, plus meals and support services.</p>
+            <div class="card-links"><a href="tel:+14034101111">Call 403-410-1111</a><a href="http://www.salvationarmycalgary.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">47</span><h3>Calgary Housing Company</h3></div>
+            <p>City-owned affordable housing provider offering subsidised rental housing and referrals to shelters and transitional housing.</p>
+            <div class="card-links"><span class="no-phone">See website for contact options</span><a href="https://www.calgaryhousingcompany.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 6. FOOD -->
+      <section class="cat" id="food" aria-labelledby="h-food">
+        <div class="cat-head"><span class="range">48 — 55</span><h2 id="h-food">Food &amp; Basic Needs</h2></div>
+        <p class="cat-intro">Emergency food hampers, school lunches, delivered meals, and community food programs across Calgary.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">48</span><h3>Calgary Food Bank</h3></div>
+            <p>Calgary's main emergency food hub, providing food hampers to families and individuals in crisis and food support to partner agencies.</p>
+            <div class="card-links"><a href="tel:+14032532055">Call 403-253-2055</a><a href="https://www.calgaryfoodbank.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">49</span><h3>Brown Bagging for Calgary's Kids</h3></div>
+            <p>Free school lunches for children in Calgary who would otherwise go without, made and delivered by community volunteers.</p>
+            <div class="card-links"><a href="tel:+14032647979">Call 403-264-7979</a><a href="https://bb4ck.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">50</span><h3>Calgary Meals on Wheels</h3></div>
+            <p>Nutritious, affordable meals delivered to anyone in Calgary, regardless of age or income, including daily specials and frozen options.</p>
+            <div class="card-links"><a href="tel:+14032432834">Call 403-243-2834</a><a href="http://www.mealsonwheels.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">51</span><h3>Veterans Food Bank of Calgary</h3></div>
+            <p>Food and practical support for veterans in need in Calgary, run by the Canadian Veterans Service Society.</p>
+            <div class="card-links"><a href="tel:+14032778387">Call 403-277-8387</a><a href="https://cavss.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">52</span><h3>Community Kitchen Program of Calgary</h3></div>
+            <p>Community kitchens, Good Food Box produce boxes, and children's food-skills programs that help stretch food budgets.</p>
+            <div class="card-links"><a href="tel:+14032750258">Call 403-275-0258</a><a href="http://www.ckpcalgary.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">53</span><h3>Muslim Food Bank and Community Services</h3></div>
+            <p>Food bank and community services in Calgary, including halal food support.</p>
+            <div class="card-links"><a href="tel:+18662483868">Call 1-866-248-3868</a><a href="https://muslimfoodbank.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">54</span><h3>Good Neighbour Community Market</h3></div>
+            <p>Low-cost community market and food support in downtown Calgary.</p>
+            <div class="card-links"><span class="no-phone">See website for details</span><a href="http://www.goodneighbourcalgary.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">55</span><h3>The Alex Community Food Centre</h3></div>
+            <p>Food access, food skills, community meals, kitchens, and gardens for low-income Calgarians.</p>
+            <div class="card-links"><a href="tel:+14034555792">Call 403-455-5792</a><a href="http://www.thealexcfc.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 7. HEALTH CARE -->
+      <section class="cat" id="health-care" aria-labelledby="h-hc">
+        <div class="cat-head"><span class="range">56 — 61</span><h2 id="h-hc">Health Care Access</h2></div>
+        <p class="cat-intro">Community health centres, primary care networks, and walk-in options that meet people where they are.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">56</span><h3>The Alex Community Health Centre</h3></div>
+            <p>Primary care, housing, food, and community supports for vulnerable Calgarians, including a mobile care clinic and youth health centre.</p>
+            <div class="card-links"><a href="tel:+14035202260">Call 403-520-2260</a><a href="http://www.thealex.ca" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">57</span><h3>CUPS Calgary</h3></div>
+            <p>Integrated health care, basic needs, housing, and family and child support for low-income Calgarians affected by poverty and trauma.</p>
+            <div class="card-links"><a href="tel:+14032218780">Call 403-221-8780</a><a href="https://www.cupscalgary.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">58</span><h3>Sheldon M. Chumir Health Centre — Urgent Mental Health Care</h3></div>
+            <p>Walk-in assessment and treatment for urgent but non-emergency mental health concerns, open 24/7 at the downtown Chumir centre.</p>
+            <div class="card-links"><a href="tel:+14039556200">Call 403-955-6200</a><a href="https://www.albertahealthservices.ca/findhealth/Service.aspx?id=1671&amp;serviceAtFacilityID=1040105#contentStart" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">59</span><h3>Mosaic Primary Care Network</h3></div>
+            <p>Primary care network supporting family physicians and team-based care in northeast Calgary.</p>
+            <div class="card-links"><a href="tel:+15873537611">Call 587-353-7611</a><a href="https://www.mosaicpcn.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">60</span><h3>Calgary Foothills Primary Care Network</h3></div>
+            <p>Primary care network supporting family physicians and team-based care in northwest Calgary.</p>
+            <div class="card-links"><a href="tel:+14032843726">Call 403-284-3726</a><a href="http://www.cfpcn.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">61</span><h3>Alberta Indigenous Virtual Care Clinic</h3></div>
+            <p>Virtual primary care consultations with Alberta physicians experienced in culturally safe care, for First Nations, Inuit, and Métis people without a primary care provider.</p>
+            <div class="card-links"><a href="tel:+18883424822">Call 1-888-342-4822</a><a href="https://aivcc.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 8. FAMILIES -->
+      <section class="cat" id="families" aria-labelledby="h-fam">
+        <div class="cat-head"><span class="range">62 — 69</span><h2 id="h-fam">Children, Youth &amp; Families</h2></div>
+        <p class="cat-intro">Crisis nurseries, mentoring, family support, and services for children and youth across Calgary.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">62</span><h3>Hull Services</h3></div>
+            <p>Integrated mental health, behavioural, and developmental services, therapy, school, and foster care programs for children, youth, and families.</p>
+            <div class="card-links"><a href="tel:+14032518000">Call 403-251-8000</a><a href="http://www.hullservices.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">63</span><h3>Children's Cottage Society</h3></div>
+            <p>Crisis nursery, family support, and parenting programs, plus the 24/7 Cottage Link Line for families in crisis.</p>
+            <div class="card-links"><a href="tel:+14032332273">Crisis line 403-233-2273</a><a href="https://childrenscottage.ab.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">64</span><h3>Big Brothers Big Sisters of Calgary and Area</h3></div>
+            <p>Volunteer mentoring programs for children and youth in schools and communities across Calgary and area.</p>
+            <div class="card-links"><a href="tel:+14037773535">Call 403-777-3535</a><a href="http://www.bbbscalgary.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">65</span><h3>Trellis Society</h3></div>
+            <p>Programs for children, youth, and families that build family and community supports and improve access to resources.</p>
+            <div class="card-links"><a href="tel:+14032193477">Call 403-219-3477</a><a href="https://www.growwithtrellis.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">66</span><h3>Highbanks Society</h3></div>
+            <p>Housing, parenting, and education support for vulnerable pregnant or parenting young women aged 16–24 leaving domestic violence, poverty, or homelessness.</p>
+            <div class="card-links"><a href="tel:+14035210082">Call 403-521-0082</a><a href="https://highbankssociety.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">67</span><h3>Children's Grief Centre</h3></div>
+            <p>Individual and family counselling and peer groups, on a sliding scale, for families with children 19 and under grieving the death of someone close.</p>
+            <div class="card-links"><a href="tel:+14032634525">Call 403-263-4525</a><a href="https://childrensgriefcentre.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">68</span><h3>Alberta Child Abuse Hotline</h3></div>
+            <p>24/7 reporting and support line to call when a child or youth is being neglected or abused.</p>
+            <div class="card-links"><a href="tel:+18003875437">Call 1-800-387-5437</a><a href="https://www.alberta.ca/childrens-services.aspx" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">69</span><h3>Family and Community Support Services (FCSS Calgary)</h3></div>
+            <p>City of Calgary funding and connection to preventive family, parenting, mental health, and community programs across the city.</p>
+            <div class="card-links"><a href="tel:311">Call 311</a><a href="https://www.calgary.ca/community-services/fcss.html" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 9. SENIORS -->
+      <section class="cat" id="seniors" aria-labelledby="h-sen">
+        <div class="cat-head"><span class="range">70 — 74</span><h2 id="h-sen">Seniors</h2></div>
+        <p class="cat-intro">Seniors centres, social work support, and an elder abuse line for older adults in Calgary.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">70</span><h3>Kerby Centre (Unison)</h3></div>
+            <p>One of Canada's flagship seniors agencies, offering wellness, recreation, adult day support, shelter, and information services for Calgarians 55+.</p>
+            <div class="card-links"><a href="tel:+14032650661">Call 403-265-0661</a><a href="https://www.kerbycentre.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">71</span><h3>Calgary Seniors' Resource Society</h3></div>
+            <p>Community-based social work support, SeniorConnect, and volunteer visiting and transport programs helping older adults age in place and stay connected.</p>
+            <div class="card-links"><a href="tel:+14032666200">Call 403-266-6200</a><a href="http://www.calgaryseniors.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">72</span><h3>Elder Abuse Resource Line (Unison)</h3></div>
+            <p>24/7 response, investigation support, and guidance for older adults 55+ experiencing any type of abuse, and for their families and care providers.</p>
+            <div class="card-links"><a href="tel:+14037053250">Call 403-705-3250</a><a href="http://www.unisonalberta.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">73</span><h3>Confederation Park 55+ Activity Centre</h3></div>
+            <p>Seniors activity centre with recreation, social, and wellness programs for Calgarians 55+.</p>
+            <div class="card-links"><a href="tel:+14032894780">Call 403-289-4780</a><a href="https://yycseniors.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">74</span><h3>Bow Cliff Seniors</h3></div>
+            <p>Seniors centre offering social, recreation, and wellness activities for adults 50+ in southwest Calgary.</p>
+            <div class="card-links"><a href="tel:+14032460390">Call 403-246-0390</a><a href="https://www.bowcliffseniors.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 10. NEWCOMERS -->
+      <section class="cat" id="newcomers" aria-labelledby="h-new">
+        <div class="cat-head"><span class="range">75 — 79</span><h2 id="h-new">Newcomers &amp; Immigrants</h2></div>
+        <p class="cat-intro">Settlement, language, and employment services for people who are new to Calgary and to Canada.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">75</span><h3>Immigrant Services Calgary</h3></div>
+            <p>Settlement and integration services connecting newcomers to the right service at the right agency, including needs assessment and referrals.</p>
+            <div class="card-links"><a href="tel:+14032651120">Call 403-265-1120</a><a href="http://www.immigrantservicescalgary.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">76</span><h3>Centre for Newcomers</h3></div>
+            <p>Settlement, integration, language, employment, and LGBTQ+ settlement services and information for Calgary newcomers and refugees.</p>
+            <div class="card-links"><a href="tel:+14035693325">Call 403-569-3325</a><a href="http://www.centrefornewcomers.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">77</span><h3>Calgary Immigrant Women's Association (CIWA)</h3></div>
+            <p>Settlement, language training, employment, parenting, counselling, legal, and seniors programs for immigrant women and their families.</p>
+            <div class="card-links"><a href="tel:+14032634414">Call 403-263-4414</a><a href="http://www.ciwa.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">78</span><h3>Calgary Catholic Immigration Society (CCIS)</h3></div>
+            <p>Settlement, language, employment, and refugee services for newcomers in Calgary and surrounding communities.</p>
+            <div class="card-links"><a href="tel:+14032622006">Call 403-262-2006</a><a href="http://www.ccisab.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">79</span><h3>Alberta Association of Immigrant Serving Agencies (AAISA)</h3></div>
+            <p>Provincial umbrella organisation supporting immigrant-serving agencies and sector coordination, based in Calgary.</p>
+            <div class="card-links"><a href="tel:+14032732962">Call 403-273-2962</a><a href="http://www.aaisa.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 11. INDIGENOUS -->
+      <section class="cat" id="indigenous" aria-labelledby="h-ind">
+        <div class="cat-head"><span class="range">80 — 84</span><h2 id="h-ind">Indigenous-Led Services</h2></div>
+        <p class="cat-intro">Indigenous-led and Indigenous-focused services in Calgary, grounded in culture, ceremony, and community.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">80</span><h3>Aboriginal Friendship Centre of Calgary</h3></div>
+            <p>Indigenous cultural connection, programs, and outreach services for Calgary's urban Indigenous population.</p>
+            <div class="card-links"><a href="tel:+14032707379">Call 403-270-7379</a><a href="https://www.afccalgary.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">81</span><h3>Miskanawah Community Services Association</h3></div>
+            <p>Indigenous-led child, youth, family, and community services grounded in Cree natural law (Wahkotiwin), cultural teachings, and ceremony.</p>
+            <div class="card-links"><a href="tel:+14032475003">Call 403-247-5003</a><a href="https://www.miskanawah.ca" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">82</span><h3>Elbow River Healing Lodge (AHS)</h3></div>
+            <p>Indigenous-focused primary health care offering holistic, wraparound care to First Nations, Métis, and Inuit individuals and families, with Elder and traditional wellness support, at the Sheldon M. Chumir Centre.</p>
+            <div class="card-links"><a href="tel:+14039556600">Call 403-955-6600</a><a href="https://www.albertahealthservices.ca/findhealth/Service.aspx?id=1009201" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">83</span><h3>Native Counselling Services of Alberta</h3></div>
+            <p>Culturally appropriate counselling, court, and community support services for Indigenous people in Alberta, with a Calgary office.</p>
+            <div class="card-links"><a href="tel:+14032377850">Call 403-237-7850</a><a href="http://www.ncsa.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">84</span><h3>Métis Nation of Alberta — Region 3 (Calgary)</h3></div>
+            <p>Representative voice, programs, and services advancing Métis people in the Calgary region, including self-reliance and self-determination initiatives.</p>
+            <div class="card-links"><a href="tel:+14035698800">Call 403-569-8800</a><a href="https://www.metis3.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 12. EMPLOYMENT -->
+      <section class="cat" id="employment" aria-labelledby="h-emp">
+        <div class="cat-head"><span class="range">85 — 91</span><h2 id="h-emp">Employment, Income &amp; Money</h2></div>
+        <p class="cat-intro">Job search support, income benefits, financial coaching, and low-income subsidies that make city life more affordable.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">85</span><h3>Momentum</h3></div>
+            <p>Skills training, financial coaching, matched savings, microloans, and entrepreneurship support for Calgarians on low incomes.</p>
+            <div class="card-links"><a href="tel:+14032729323">Call 403-272-9323</a><a href="https://momentum.org/startwork" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">86</span><h3>Prospect Human Services</h3></div>
+            <p>Employment programs, career exploration, job placement, and on-the-job support for job seekers, including people with disabilities.</p>
+            <div class="card-links"><a href="tel:+14032732822">Call 403-273-2822</a><a href="https://www.prospectnow.ca/community-resources/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">87</span><h3>Alberta Supports</h3></div>
+            <p>Provincial one-stop access to income, employment, disability, health benefit, and seniors programs, in person, by phone, and online.</p>
+            <div class="card-links"><a href="tel:+18776449992">Call 1-877-644-9992</a><a href="https://www.alberta.ca/contact-aish-and-adap" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">88</span><h3>Fair Entry (City of Calgary)</h3></div>
+            <p>One application giving eligible low-income Calgarians subsidised access to City programs, including recreation fee assistance and transit passes.</p>
+            <div class="card-links"><a href="tel:311">Call 311</a><a href="https://www.calgary.ca/social-services/low-income/fair-entry-subsidy/should-I-apply.html" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">89</span><h3>Calgary Transit — Low-Income Monthly Pass</h3></div>
+            <p>Reduced-rate monthly transit passes for eligible low-income Calgarians, applied for through Fair Entry.</p>
+            <div class="card-links"><a href="tel:+14032621000">Call 403-262-1000</a><a href="https://www.calgarytransit.com/content/transit/en/home/fares---passes/passes/low-income-monthly-pass.html" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">90</span><h3>Alberta Works — Income Support</h3></div>
+            <p>Temporary financial assistance for Albertans with no other means to meet basic needs such as food, clothing, shelter, and transport.</p>
+            <div class="card-links"><a href="tel:+18666445135">Call 1-866-644-5135</a><a href="https://www.alberta.ca/get-help-and-support" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">91</span><h3>ALIS — Alberta Learning Information Service</h3></div>
+            <p>Provincial career, education, and employment information, planning tools, and job search resources for all Albertans.</p>
+            <div class="card-links"><span class="no-phone">Online resource</span><a href="https://alis.alberta.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 13. WOMEN -->
+      <section class="cat" id="women" aria-labelledby="h-wom">
+        <div class="cat-head"><span class="range">92 — 95</span><h2 id="h-wom">Women's Services &amp; Safety</h2></div>
+        <p class="cat-intro">Support for women facing domestic or sexual violence, and women-centred community spaces in Calgary.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">92</span><h3>FearIsNotLove — Calgary Women's Emergency Shelter</h3></div>
+            <p>Emergency shelter, a 24/7 domestic violence helpline, counselling, systems navigation, and group programs for people experiencing domestic and partner violence.</p>
+            <div class="card-links"><a href="tel:+14032347233">Call 403-234-7233</a><a href="https://www.calgarywomensshelter.com/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">93</span><h3>Calgary Communities Against Sexual Abuse (CCASA)</h3></div>
+            <p>Specialised counselling, support, and information services for people affected by sexual violence and trauma.</p>
+            <div class="card-links"><a href="tel:+14032375888">Call 403-237-5888</a><a href="https://calgarycasa.com/about-ccasa/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">94</span><h3>Women's Centre of Calgary</h3></div>
+            <p>Safe, women-centred drop-in space offering practical assistance, connection, peer support, and advocacy for women.</p>
+            <div class="card-links"><a href="tel:+14032641155">Call 403-264-1155</a><a href="http://www.womenscentrecalgary.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">95</span><h3>Discovery House</h3></div>
+            <p>Second-stage shelter and community housing, counselling, family support, and child and youth programs for women and children leaving domestic violence.</p>
+            <div class="card-links"><a href="tel:+14036700467">Call 403-670-0467</a><a href="https://discoveryhouse.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <!-- 14. COMMUNITY & LEGAL -->
+      <section class="cat" id="community" aria-labelledby="h-com">
+        <div class="cat-head"><span class="range">96 — 100</span><h2 id="h-com">Community, Recreation &amp; Legal Help</h2></div>
+        <p class="cat-intro">Libraries, volunteering, and free legal help — the everyday infrastructure of a connected city.</p>
+        <ul class="grid">
+          <li class="card"><div class="card-top"><span class="badge">96</span><h3>Calgary Public Library</h3></div>
+            <p>Free public library system offering books, programs, digital access, learning support, and a Wellness Desk with mental health referrals.</p>
+            <div class="card-links"><a href="tel:+14032602600">Call 403-260-2600</a><a href="https://www.calgarylibrary.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">97</span><h3>Calgary Legal Guidance</h3></div>
+            <p>Free legal advice, representation, and advocacy in criminal, family, domestic violence, landlord and tenant, immigration, elder, and benefits law for Calgarians who cannot afford a lawyer.</p>
+            <div class="card-links"><a href="tel:+14032349266">Call 403-234-9266</a><a href="http://clg.ab.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">98</span><h3>Pro Bono Law Alberta</h3></div>
+            <p>Coordinates free legal services from volunteer lawyers for low-income Albertans and non-profit organisations.</p>
+            <div class="card-links"><a href="tel:+14035414804">Call 403-541-4804</a><a href="http://pbla.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">99</span><h3>Legal Aid Alberta</h3></div>
+            <p>Legal representation and advice for eligible low-income Albertans in criminal, family, child welfare, and immigration matters.</p>
+            <div class="card-links"><a href="tel:+18668453425">Call 1-866-845-3425</a><a href="http://www.legalaid.ab.ca/" target="_blank" rel="noopener">Website ↗</a></div></li>
+          <li class="card"><div class="card-top"><span class="badge">100</span><h3>Volunteer Connector (Propellus)</h3></div>
+            <p>Calgary volunteer-matching platform connecting volunteers with non-profit opportunities across the city.</p>
+            <div class="card-links"><span class="no-phone">Online resource</span><a href="https://www.volunteerconnector.org/" target="_blank" rel="noopener">Website ↗</a></div></li>
+        </ul>
+      </section>
+
+      <div class="empty-state" id="emptyState" role="status">
+        <strong>No resources match that search</strong>
+        Try a broader word, or call <a href="tel:211">2-1-1</a> — a real person can help you find the right service, free and confidential, 24/7.
+      </div>
+    </main>
+
+    <footer class="site">
+      <div class="wrap footer-inner">
+        <h2>About this directory</h2>
+        <p>
+          This directory was compiled in October 2026 from the public listings of the
+          organisations themselves and Alberta service directories. Phone numbers and
+          websites can change — if a number does not work, call
+          <a href="tel:211">2-1-1</a> and ask for the service by name, or check the
+          organisation's website for its current contact details.
+        </p>
+        <p>
+          Inclusion here is not an endorsement, and services set their own eligibility
+          rules. In an emergency, always call <a href="tel:911">911</a>.
+        </p>
+        <p><a class="back-top" href="#directory">Back to the top of the directory ↑</a></p>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        var input = document.getElementById('search');
+        var note = document.getElementById('countNote');
+        var empty = document.getElementById('emptyState');
+        var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+        var sections = Array.prototype.slice.call(document.querySelectorAll('section.cat'));
+        var total = cards.length;
+
+        function normalise(s) {
+          return s.toLowerCase().replace(/['’]/g, '');
+        }
+
+        function applyFilter() {
+          var q = normalise(input.value.trim());
+          var terms = q ? q.split(/\s+/) : [];
+          var visible = 0;
+          cards.forEach(function (card) {
+            var text = normalise(card.textContent);
+            var catName = '';
+            var sec = card.closest('section.cat');
+            if (sec) {
+              var h = sec.querySelector('h2');
+              if (h) catName = normalise(h.textContent);
+            }
+            var hay = text + ' ' + catName;
+            var show = terms.every(function (t) { return hay.indexOf(t) !== -1; });
+            card.style.display = show ? '' : 'none';
+            if (show) visible++;
+          });
+          sections.forEach(function (sec) {
+            var anyVisible = Array.prototype.some.call(
+              sec.querySelectorAll('.card'),
+              function (c) { return c.style.display !== 'none'; }
+            );
+            sec.style.display = anyVisible ? '' : 'none';
+          });
+          note.innerHTML = 'Showing <strong>' + visible + '</strong> of ' + total + ' resources';
+          empty.classList.toggle('visible', visible === 0);
+        }
+
+        input.addEventListener('input', applyFilter);
+      })();
+    </script>
+  </body>
+</html>
