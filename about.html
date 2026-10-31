@@ -64,7 +64,8 @@ function downloadExercise(btn) {
     '<div style="margin-top:30px"><h3 style="color:#1a6b4a">Your Response</h3>' +
     '<div style="border:1px solid #ccc;min-height:300px;padding:15px;border-radius:4px">' +
     '<p style="color:#aaa">Write your reflections here...</p><br><br><br><br><br><br><br><br><br><br></div></div>' +
-    '<div class="footer">kazeembadrudeen-lang.github.io/Kazeem-</div></body></html>';
+    '<div class="footer">kazeembadrudeen-lang.github.io/Kazeem-</div><!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "64403e7b5898413982fbe6de02d7647c"}'></script><!-- End Cloudflare Web Analytics -->
+</body></html>';
   var blob = new Blob(['\ufeff', html], {type: 'application/msword'});
   var a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
