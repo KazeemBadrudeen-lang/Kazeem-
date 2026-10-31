@@ -96,10 +96,17 @@ function downloadExercise(btn) {
       <a href="#writing">Writing</a>
       <a href="#resources">Resources</a>
       <a href="resources.html">Directory of Services</a>
-      <a href="forms.html">Important Forms</a>
-      <a href="#contact">Contact</a>
-      <a class="btn" href="assets/resume.pdf">Resume (PDF)</a>
+      <div class="nav-dropdown" style="position:relative">
+        <button class="nav-more" aria-label="More pages" aria-expanded="false" aria-haspopup="true" onclick="var m=this.nextElementSibling;m.classList.toggle('open');this.setAttribute('aria-expanded',m.classList.contains('open'))">More &#9662;</button>
+        <div class="nav-menu" style="display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid #e2e8e7;border-radius:8px;min-width:180px;box-shadow:0 4px 16px rgba(0,0,0,.12);padding:.5rem 0;z-index:200">
+          <a href="#contact" style="display:block;padding:.5rem 1rem">Contact</a>
+          <a href="assets/resume.pdf" style="display:block;padding:.5rem 1rem">Resume (PDF)</a>
+          <a href="donate.html" style="display:block;padding:.5rem 1rem">Donate</a>
+          <a href="forms.html" style="display:block;padding:.5rem 1rem">Forms</a>
+        </div>
+      </div>
     </div>
+    <style>.nav-menu.open{display:block !important}</style>
   </div>
 </nav>
 
@@ -389,7 +396,6 @@ function downloadExercise(btn) {
     <h2>Community <span class="accent">Resources</span></h2>
     <p class="lede">Calgary organizations and supports I recommend.</p>
     <p style="margin-top:1rem"><a class="btn" href="resources.html">See all 500 community resources in Calgary</a></p>
-    <p style="margin-top:1rem"><a class="btn" href="forms.html">See all 500 important forms</a></p>
     <div class="grid grid-4" style="margin-top:1.5rem">
       <a class="card" href="https://www.ab211.ca" target="_blank" rel="noopener"><h3>211 Alberta</h3><p>Connects people to community and social services across Alberta.</p></a>
       <a class="card" href="https://www.elementscmhc.ca" target="_blank" rel="noopener"><h3>Elements Calgary Mental Health</h3><p>Community mental health programs and recreation services.</p></a>
