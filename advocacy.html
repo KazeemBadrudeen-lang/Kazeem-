@@ -8,7 +8,7 @@
 <meta name="keywords" content="Kazeem Badrudeen, health and human services practitioner, Calgary mental health, disability advocacy, accessibility consulting, health program evaluation, recreation services Calgary, mental health programs Alberta">
 <meta name="author" content="Kazeem Badrudeen">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://kazeembadrudeen-lang.github.io/Kazeem-/advocacy.html">
+<link rel="canonical" href="https://kazeembadrudeen-lang.github.io/Kazeem-/">
 
 <!-- Open Graph for social sharing -->
 <meta property="og:type" content="website">
@@ -58,7 +58,27 @@ function downloadExercise(btn) {
     '.header h1{color:#1a6b4a;margin:0;font-size:1.4rem}' +
     '.header p{color:#666;font-size:0.9rem;margin:5px 0 0}' +
     'h2{color:#1a6b4a;font-size:1.8rem;margin-bottom:10px}' +
-    '.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;text-align:center;color:#888;font-size:0.85rem}</style></head><body>
+    '.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;text-align:center;color:#888;font-size:0.85rem}</style></head><body>' +
+    '<div class="header"><h1>Kazeem Badrudeen</h1><p>Health and Human Services Practitioner | Wellness Exercises</p></div>' +
+    '<h2>' + title + '</h2>' + body +
+    '<div style="margin-top:30px"><h3 style="color:#1a6b4a">Your Response</h3>' +
+    '<div style="border:1px solid #ccc;min-height:300px;padding:15px;border-radius:4px">' +
+    '<p style="color:#aaa">Write your reflections here...</p><br><br><br><br><br><br><br><br><br><br></div></div>' +
+    '<div class="footer">kazeembadrudeen-lang.github.io/Kazeem-</div></body></html>';
+  var blob = new Blob(['\ufeff', html], {type: 'application/msword'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = title.replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '.doc';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
 <a href="#main" class="skip-link">Skip to main content</a>
 <nav class="nav" aria-label="Main navigation">
   <div class="nav-inner">
