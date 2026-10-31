@@ -47,32 +47,6 @@
   ]
 }
 
-function downloadExercise(btn) {
-  var card = btn.closest('.card');
-  var title = card.querySelector('h3').textContent;
-  var body = '';
-  card.querySelectorAll('p').forEach(function(p) { body += '<p>' + p.innerHTML + '</p>'; });
-  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>' + title + ' - Kazeem Badrudeen</title>' +
-    '<style>body{font-family:Georgia,serif;max-width:600px;margin:40px auto;padding:0 20px;color:#2d2d2d;line-height:1.7}' +
-    '.header{text-align:center;border-bottom:2px solid #1a6b4a;padding-bottom:20px;margin-bottom:30px}' +
-    '.header h1{color:#1a6b4a;margin:0;font-size:1.4rem}' +
-    '.header p{color:#666;font-size:0.9rem;margin:5px 0 0}' +
-    'h2{color:#1a6b4a;font-size:1.8rem;margin-bottom:10px}' +
-    '.footer{margin-top:40px;padding-top:20px;border-top:1px solid #ddd;text-align:center;color:#888;font-size:0.85rem}</style></head><body>' +
-    '<div class="header"><h1>Kazeem Badrudeen</h1><p>Health and Human Services Practitioner | Wellness Exercises</p></div>' +
-    '<h2>' + title + '</h2>' + body +
-    '<div style="margin-top:30px"><h3 style="color:#1a6b4a">Your Response</h3>' +
-    '<div style="border:1px solid #ccc;min-height:300px;padding:15px;border-radius:4px">' +
-    '<p style="color:#aaa">Write your reflections here...</p><br><br><br><br><br><br><br><br><br><br></div></div>' +
-    '<div class="footer">kazeembadrudeen-lang.github.io/Kazeem-</div></body></html>';
-  var blob = new Blob(['\ufeff', html], {type: 'application/msword'});
-  var a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = title.replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '.doc';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
 </script>
 
 <link rel="stylesheet" href="styles.css">
