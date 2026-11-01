@@ -172,6 +172,7 @@ function dealMeld(s){
 }
 function hostStartGame(game){
   if(!isHost)return;
+  if(typeof document!=='undefined'&&!window._oppName){const gs=document.getElementById('gamestatus');if(gs)gs.textContent='Waiting for a second player to join. Start game is disabled until your friend joins.';return;}
   G={game,players:[{name:myName,score:0},{name:opponentName(),score:0}],log:[]};
   if(game==='bidtrick')startBidTrick(G);else if(game==='meld')startMeld(G);
   broadcastState();
@@ -259,14 +260,44 @@ document.addEventListener('DOMContentLoaded',()=>{
   const $=id=>document.getElementById(id);
   const status=t=>{$('connstatus').textContent=t;};
   function genCode(){const L='ABCDEFGHJKLMNPQRSTUVWXYZ';let s='';for(let i=0;i<5;i++)s+=L[Math.floor(Math.random()*L.length)];return s;}
-  function showLobby(){ $('lobby').style.display='block'; $('players').textContent='Players: '+myName+(window._oppName?' and '+window._oppName:' (waiting for your friend…)'); $('roominfo').textContent='Room code: '+roomCode+' — share this code with your friend.'; }
+  let connOpen=false, joinTimer=null;
+  function hasOpponent(){ return !!window._oppName; }
+  function updateStart(){
+    const g=$('gameSel').value, real=(g==='bidtrick'||g==='meld');
+    if(real){
+      $('startBtn').disabled=!hasOpponent();
+      $('gamestatus').textContent=hasOpponent()?'Both players are here. Press Start game.':'Waiting for a second player to join. Start game is disabled until your friend joins.';
+    } else {
+      $('startBtn').disabled=false;
+      $('gamestatus').textContent='This game plays in this browser only, against the computer or solo.';
+    }
+  }
+  function showLobby(){ $('lobby').style.display='block'; $('players').textContent='Players: '+myName+(window._oppName?' and '+window._oppName:' (waiting for your friend…)'); $('roominfo').textContent='Room code: '+roomCode+' — share this code with your friend.'; updateStart(); }
   function onConnOpen(){
+    connOpen=true; if(joinTimer){clearTimeout(joinTimer);joinTimer=null;}
     status(isHost?'Room open. Waiting for your friend to join…':'Connected to the room.');
     showLobby();
   }
+  // Attach handlers to a DataConnection, including the race where it is
+  // already open before handlers are attached (which previously produced
+  // a silent, never-connected join with no error at all).
+  function attachConn(c){
+    conn=c; connOpen=false;
+    c.on('open',onConnOpen);
+    c.on('data',onData);
+    c.on('error',e=>{ status('Connection error: '+(e&&e.type?e.type:'connection failed')+'. Try Join room again.'); });
+    c.on('close',()=>{ status('The other player disconnected. The room has ended. Create or join a new room.'); connOpen=false; });
+    if(c.open) onConnOpen();
+  }
+  function destroyOldPeer(){
+    try{if(conn)conn.close();}catch(e){}
+    try{if(peer)peer.destroy();}catch(e){}
+    conn=null; peer=null; connOpen=false; if(joinTimer){clearTimeout(joinTimer);joinTimer=null;}
+  }
+  const PEER_OPTS={host:'0.peerjs.com',port:443,path:'/',secure:true};
   function onData(d){
-    if(d.type==='join'){window._oppName=d.name;chatAdd(d.name+' joined the room.');showLobby();if(isHost)sendToPeer({type:'welcome',name:myName});}
-    if(d.type==='welcome'){window._oppName=d.name;showLobby();}
+    if(d.type==='join'){window._oppName=d.name;chatAdd(d.name+' joined the room.');showLobby();updateStart();if(isHost)sendToPeer({type:'welcome',name:myName});}
+    if(d.type==='welcome'){window._oppName=d.name;showLobby();updateStart();}
     if(d.type==='chat')chatAdd(d.name+': '+d.text);
     if(d.type==='state'){G=d.state;renderGame(G);}
     if(d.type==='move'&&isHost){const err=hostApplyMove(1,d.move);if(err)sendToPeer({type:'error',text:err});else broadcastState();}
@@ -275,24 +306,46 @@ document.addEventListener('DOMContentLoaded',()=>{
   }
   $('createBtn').onclick=()=>{
     if(typeof Peer==='undefined'){status('Peer connection library did not load. Check your connection and reload.');return;}
-    myName=$('myname').value.trim()||'Player';isHost=true;myIdx=0;roomCode=genCode();
-    peer=new Peer('playhaven-'+roomCode.toLowerCase());
+    destroyOldPeer();
+    myName=$('myname').value.trim()||'Player';isHost=true;myIdx=0;roomCode=genCode();window._oppName='';
+    status('Creating room '+roomCode+'…');
+    peer=new Peer('playhaven-'+roomCode.toLowerCase(),PEER_OPTS);
     peer.on('open',()=>{status('Room created. Code: '+roomCode+'. Share it with your friend.');showLobby();});
-    peer.on('connection',c=>{conn=c;conn.on('open',onConnOpen);conn.on('data',onData);});
-    peer.on('error',e=>status('Connection problem: '+e.type+'. Try creating a new room.'));
+    peer.on('connection',c=>{attachConn(c);});
+    peer.on('error',e=>status('Connection problem: '+(e&&e.type?e.type:'failed')+'. Try creating a new room.'));
+    peer.on('disconnected',()=>{status('Lost connection to the signalling server. Reload the page and create a new room.');});
   };
   $('joinBtn').onclick=()=>{
     if(typeof Peer==='undefined'){status('Peer connection library did not load. Check your connection and reload.');return;}
-    myName=$('myname').value.trim()||'Player';isHost=false;myIdx=1;roomCode=$('joincode').value.trim().toUpperCase();
+    destroyOldPeer();
+    myName=$('myname').value.trim()||'Player';isHost=false;myIdx=1;roomCode=$('joincode').value.trim().toUpperCase();window._oppName='';
     if(roomCode.length!==5){status('Enter the 5-letter room code.');return;}
-    peer=new Peer();
-    peer.on('open',()=>{conn=peer.connect('playhaven-'+roomCode.toLowerCase());conn.on('open',()=>{onConnOpen();sendToPeer({type:'join',name:myName});});conn.on('data',onData);});
-    peer.on('error',e=>status('Could not join that room: '+e.type+'. Check the code and try again.'));
+    status('Connecting to room '+roomCode+'…');
+    peer=new Peer(PEER_OPTS);
+    peer.on('open',()=>{
+      status('Connected to the signalling server. Joining room '+roomCode+'…');
+      const c=peer.connect('playhaven-'+roomCode.toLowerCase(),{reliable:true});
+      attachConn(c);
+      // Send the join message as soon as the connection opens (attachConn
+      // already calls onConnOpen immediately if it is already open).
+      c.on('open',()=>{sendToPeer({type:'join',name:myName});});
+      if(c.open)sendToPeer({type:'join',name:myName});
+      joinTimer=setTimeout(()=>{
+        if(!connOpen)status('Could not connect to room '+roomCode+'. The host page may be closed, or the code may be wrong. Check the code and try Join room again.');
+      },12000);
+    });
+    peer.on('error',e=>{
+      const t=e&&e.type?e.type:'failed';
+      if(t==='peer-unavailable')status('Room '+roomCode+' was not found. The host may have closed the page, or the code may be wrong. Check the code and try again.');
+      else status('Could not join that room: '+t+'. Check the code and try again.');
+    });
+    peer.on('disconnected',()=>{status('Lost connection to the signalling server. Reload the page and try Join room again.');});
   };
   $('startBtn').onclick=()=>{
     const g=$('gameSel').value;
     if(g==='bidtrick'||g==='meld'){
-      if(!conn){status('Create or join a room first.');return;}
+      if(!conn){status('Create or join a room first.');$('gamestatus').textContent='Create or join a room first.';return;}
+      if(!hasOpponent()){$('gamestatus').textContent='Waiting for a second player to join. Start game is disabled until your friend joins.';return;}
       if(isHost)hostStartGame(g);else sendToPeer({type:'game',game:g});
     } else {
       // local games: render in this browser only
@@ -300,6 +353,7 @@ document.addEventListener('DOMContentLoaded',()=>{
       renderGame(G);
     }
   };
+  $('gameSel').onchange=()=>{updateStart();};
   $('chatsend').onclick=()=>{
     const t=$('chatmsg').value.trim();if(!t)return;
     chatAdd(myName+': '+t);sendToPeer({type:'chat',name:myName,text:t});$('chatmsg').value='';
@@ -308,6 +362,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     try{localStorage.setItem('playhaven-demo',JSON.stringify({age:$('ageband').value,region:$('region').value}));$('demostatus').textContent='Saved in this browser only. Thank you.';}catch(e){$('demostatus').textContent='Could not save in this browser.';}
   };
   $('democlear').onclick=()=>{try{localStorage.removeItem('playhaven-demo');}catch(e){}$('demostatus').textContent='Cleared.';};
+  updateStart();
   window._sendMove=function(move){
     if(isHost){const err=hostApplyMove(0,move);if(err)status('Move rejected: '+err);else broadcastState();}
     else sendToPeer({type:'move',move});
