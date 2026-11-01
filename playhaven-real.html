@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PlayHaven — Real Rooms</title>
+<style>
+body{font-family:system-ui,Arial,sans-serif;background:#123524;color:#fff;max-width:900px;margin:0 auto;padding:16px;line-height:1.5}
+h1{font-size:32px}h2{font-size:22px}
+button,select,input{font-size:18px;padding:10px 14px;margin:4px;border-radius:8px;border:0}
+button{background:#f2c14e;color:#123524;font-weight:700;cursor:pointer}
+button:disabled{opacity:.5}
+.cardbtn{background:#fff;color:#111;min-width:64px}
+.cardbtn.sel{outline:4px solid #f2c14e}
+.box{background:#1e4d33;border-radius:12px;padding:16px;margin:12px 0}
+.small{font-size:15px;color:#cfe8d8}
+.log{background:#0b241a;border-radius:8px;padding:10px;min-height:80px;white-space:pre-wrap}
+#chatlog{background:#0b241a;border-radius:8px;padding:10px;min-height:80px;white-space:pre-wrap}
+a{color:#f2c14e}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head><body>
+<h1>PlayHaven — Real Rooms</h1>
+<p>Play together from different devices. No account needed. Choose a display name only — no email is collected.</p>
+<div class="box small"><b>How real rooms work:</b> The player who creates a room is the game host. The host's browser checks every move against the rules before it counts, so a player's browser cannot cheat the other player. Share the 5-letter code with one friend. If the host leaves or loses connection, the room ends. This page is not an App Store listing.</div>
+<div class="box small">PlayHaven is not affiliated with or endorsed by any other game publisher. All game names and wording on this page are PlayHaven's own.</div>
+
+<div class="box">
+<label>Your display name <input id="myname" value="Player" maxlength="20"></label><br>
+<button id="createBtn">Create a room</button>
+<label>Join code <input id="joincode" maxlength="5" placeholder="ABCDE" style="text-transform:uppercase;width:110px"></label>
+<button id="joinBtn">Join room</button>
+<p id="connstatus">Not connected.</p>
+<p id="roominfo"></p>
+</div>
+
+<div class="box" id="lobby" style="display:none">
+<h2>Lobby</h2><p id="players"></p>
+<label>Game
+<select id="gameSel">
+<option value="bidtrick">Bid and Trick — real multiplayer</option>
+<option value="meld">Five Suit Meld — real multiplayer</option>
+<option value="tictactoe">Tic-Tac-Toe — vs computer, in this browser</option>
+<option value="connect4">Four in a Row — vs computer, in this browser</option>
+<option value="blackjack">Blackjack — vs computer, in this browser</option>
+<option value="memory">Memory Match — solo, in this browser</option>
+</select></label>
+<button id="startBtn">Start game</button>
+<p class="small" id="gamestatus"></p>
+</div>
+
+<div class="box" id="gamebox" style="display:none">
+<h2 id="gametitle"></h2>
+<div id="gamearea"></div>
+<div class="log" id="gamelog"></div>
+</div>
+
+<div class="box">
+<h2>Table chat</h2><div id="chatlog"></div>
+<input id="chatmsg" placeholder="Say something at the table" style="width:60%">
+<button id="chatsend">Send</button>
+<p class="small">Chat goes only to the other player in your room. Nothing is stored on a server.</p>
+</div>
+
+<div class="box">
+<h2>Optional demographics — anonymous, this browser only</h2>
+<p class="small">This version has no central demographics storage, so answers are kept only in this browser and are never sent to the other player or to any server. You can clear them at any time.</p>
+<label>Age band <select id="ageband"><option value="">Prefer not to say</option><option>Under 18</option><option>18-24</option><option>25-34</option><option>35-44</option><option>45-54</option><option>55+</option></select></label>
+<label>Region <select id="region"><option value="">Prefer not to say</option><option>Alberta</option><option>Elsewhere in Canada</option><option>Elsewhere</option></select></label>
+<button id="demobtn">Save my answers</button>
+<button id="democlear">Clear my answers</button>
+<p id="demostatus" class="small"></p>
+</div>
+
+<div class="box small">
+<h2>Rules, in brief</h2>
+<p><b>Bid and Trick (5 rounds, 1 to 5 cards):</b> Each round, bid how many tricks you will win, then play tricks. Follow the led suit if you can; Star and Fool cards may be played any time. The first Star played wins a trick; a Fool only wins if every card in the trick is a Fool. Trump beats the led suit. If the trump card drawn is a Star or Fool, it is redrawn until a suit card appears. An exact bid scores 20 + 10 per trick won; a missed bid loses 10 per trick of difference. Highest total after 5 rounds wins.</p>
+<p><b>Five Suit Meld (5 rounds, 3 to 7 cards):</b> The wild rank changes each round: 3 in round 1, 4 in round 2, and so on. Jokers are always wild. Draw, then lay melds if you wish, then discard to end your turn. A meld is 3 or more cards of the same rank (a set) or 3 or more cards of the same suit in sequence (a run), with wild cards filling gaps. To go out, your whole hand after discarding must form melds. Your opponent then gets one last turn. Unmelded cards count as deadwood: number cards at face value, Jack 11, Queen 12, King 13, wild cards 20, Jokers 50. Lowest deadwood total after 5 rounds wins.</p>
+<p><b>Limits of this version:</b> Real multiplayer is for 2 players only, in Bid and Trick and Five Suit Meld. Tic-Tac-Toe, Four in a Row, Blackjack and Memory Match are playable in this browser against the computer or solo — they are not synced to the other player. If the host disconnects, the room ends.</p>
+</div>
+<script>
+/* ---------- pure game logic (no DOM) ---------- */
+const SUITS=['♠','♥','♦','♣'];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function bidDeck(){const d=[];for(const s of SUITS)for(let r=2;r<=14;r++)d.push({suit:s,rank:r,kind:'n'});for(let i=0;i<4;i++){d.push({suit:'',rank:0,kind:'W'});d.push({suit:'',rank:0,kind:'J'});}return shuffle(d).map(c=>({...c,id:newId()}));}
+// trick: cards [{card,player}], ledSuit, trumpSuit. Returns winning player index.
+function bidTrickWinner(trick,ledSuit,trump){
+  let wiz=null;for(const t of trick)if(t.card.kind==='W'){wiz=t;break;} if(wiz)return wiz.player;
+  let best=null;
+  for(const t of trick){const c=t.card;if(c.kind==='J')continue;
+    const isTrump=c.suit===trump, isLed=c.suit===ledSuit;
+    if(!isTrump&&!isLed)continue;
+    if(!best){best=t;continue;}
+    const b=best.card;
+    if(isTrump&&b.suit!==trump)best=t;
+    else if(isTrump=== (b.suit===trump) && c.rank>b.rank)best=t;
+  }
+  if(best)return best.player;
+  return trick[0].player; // all jesters: first jester wins
+}
+function bidScore(bid,won){return bid===won?20+10*won:-10*Math.abs(bid-won);}
+// Five Suit Meld
+function meldDeck(){const d=[];for(let copy=0;copy<2;copy++)for(const s of SUITS)for(let r=3;r<=13;r++)d.push({suit:s,rank:r,kind:'n'});for(let i=0;i<4;i++)d.push({suit:'',rank:0,kind:'Joker'});return shuffle(d).map(c=>({...c,id:newId()}));}
+function isWild(card,wildRank){return card.kind==='Joker'||(card.kind==='n'&&card.rank===wildRank);}
+function cardValue(card,wildRank){if(card.kind==='Joker')return 50;if(isWild(card,wildRank))return 20;return card.rank;}
+// Is a set of cards one meld? wildRank is the round wild rank.
+function isMeld(cards,wildRank){
+  if(cards.length<3)return false;
+  const wilds=cards.filter(c=>isWild(c,wildRank));const rest=cards.filter(c=>!isWild(c,wildRank));
+  if(rest.length===0)return true;
+  // book: all same rank
+  if(rest.every(c=>c.rank===rest[0].rank))return true;
+  // run: same suit, ranks distinct and fillable with wilds
+  if(rest.every(c=>c.suit===rest[0].suit)){
+    const ranks=[...new Set(rest.map(c=>c.rank))];if(ranks.length!==rest.length)return false;
+    const span=Math.max(...ranks)-Math.min(...ranks)+1;
+    return span<=cards.length;
+  }
+  return false;
+}
+// Can the whole hand be partitioned into melds? (backtracking, hand <= 7)
+function canPartition(hand,wildRank){
+  if(hand.length===0)return true;
+  // try every subset of size >=3 containing hand[0] that is a meld
+  const n=hand.length;
+  for(let mask=1;mask<(1<<n);mask++){
+    if(!(mask&1))continue;
+    const sub=[];for(let i=0;i<n;i++)if(mask>>i&1)sub.push(hand[i]);
+    if(sub.length<3||!isMeld(sub,wildRank))continue;
+    const rem=hand.filter((_,i)=>!(mask>>i&1));
+    if(canPartition(rem,wildRank))return true;
+  }
+  return false;
+}
+function deadwood(hand,meldedIds,wildRank){let t=0;for(const c of hand)if(!meldedIds.includes(c.id))t+=cardValue(c,wildRank);return t;}
+
+/* ---------- room / host logic ---------- */
+let peer=null, conn=null, isHost=false, myName='Player', myIdx=0, roomCode='';
+let G=null; // host game state, or client view
+let nextCardId=1;
+function newId(){return nextCardId++;}
+function log(m){if(typeof document!=='undefined'){const el=document.getElementById('gamelog');if(el)el.textContent+=m+'\n';}}
+function chatAdd(m){if(typeof document!=='undefined'){const el=document.getElementById('chatlog');if(el)el.textContent+=m+'\n';}}
+function sendToPeer(o){try{if(conn&&conn.open)conn.send(o);}catch(e){}}
+function viewFor(state,idx){
+  const v=JSON.parse(JSON.stringify(state));
+  v.players=v.players.map((p,i)=>({...p,hand:i===idx?p.hand:[],handCount:p.hand.length}));
+  return v;
+}
+function broadcastState(){if(!isHost||!G)return;sendToPeer({type:'state',state:viewFor(G,1)});renderGame(viewFor(G,0));}
+function startBidTrick(hostState){
+  const deck=bidDeck();let trumpCard;
+  do{trumpCard=deck.pop();}while(trumpCard.kind!=='n');
+  hostState.game='bidtrick';hostState.round=1;hostState.trump=trumpCard.suit;
+  hostState.deck=deck;hostState.phase='bid';hostState.turn=0;hostState.trick=[];hostState.ledSuit='';
+  hostState.players.forEach(p=>{p.hand=[];p.bid=null;p.won=0;p.score=p.score||0;});
+  dealBidTrick(hostState);
+}
+function dealBidTrick(s){
+  const n=s.round;
+  s.players.forEach(p=>{p.hand=s.deck.splice(0,n);p.bid=null;p.won=0;});
+  s.phase='bid';s.turn=0;s.trick=[];s.ledSuit='';
+}
+function startMeld(hostState){
+  hostState.game='meld';hostState.round=1;hostState.deck=meldDeck();
+  hostState.discard=[];hostState.phase='draw';hostState.turn=0;hostState.finalTurn=null;hostState.wentOut=null;
+  hostState.players.forEach(p=>{p.hand=[];p.melds=[];p.meldedIds=[];p.score=p.score||0;});
+  dealMeld(hostState);
+}
+function dealMeld(s){
+  const n=s.round+2; // round 1 = 3 cards ... round 5 = 7 cards
+  s.players.forEach(p=>{p.hand=s.deck.splice(0,n);p.melds=[];p.meldedIds=[];});
+  s.discard=[s.deck.pop()];s.phase='draw';s.turn=0;s.finalTurn=null;s.wentOut=null;
+}
+function hostStartGame(game){
+  if(!isHost)return;
+  G={game,players:[{name:myName,score:0},{name:opponentName(),score:0}],log:[]};
+  if(game==='bidtrick')startBidTrick(G);else if(game==='meld')startMeld(G);
+  broadcastState();
+}
+function opponentName(){return (typeof window!=='undefined'&&window._oppName)||'Friend';}
+// Host validates and applies a move. Returns error string or ''.
+function hostApplyMove(playerIdx,move){
+  if(!G||playerIdx!==G.turn)return 'Not your turn.';
+  const me=G.players[playerIdx];
+  if(G.game==='bidtrick'){
+    if(G.phase==='bid'){
+      if(typeof move.bid!=='number'||move.bid<0||move.bid>G.round)return 'Bid out of range.';
+      me.bid=move.bid;
+      if(G.players.every(p=>p.bid!==null)){G.phase='play';G.turn=0;}
+      else G.turn=1-playerIdx;
+      return '';
+    }
+    if(G.phase==='play'){
+      const card=me.hand.find(c=>c.id===move.cardId);if(!card)return 'Card not in your hand.';
+      if(G.trick.length===0)G.ledSuit=card.suit===''? '':card.suit;
+      else if(G.ledSuit&&card.kind==='n'&&card.suit===G.ledSuit){/* ok */}
+      else if(G.ledSuit&&card.kind==='n'&&card.suit!==G.ledSuit){
+        if(me.hand.some(c=>c.kind==='n'&&c.suit===G.ledSuit))return 'You must follow the led suit if you can.';
+      }
+      me.hand=me.hand.filter(c=>c.id!==card.id);
+      G.trick.push({card,player:playerIdx});
+      if(G.trick.length===2){
+        const w=bidTrickWinner(G.trick,G.ledSuit,G.trump);
+        G.players[w].won++;G.trick=[];G.ledSuit='';G.turn=w;
+        if(G.players.every(p=>p.hand.length===0)){
+          G.players.forEach(p=>{p.score+=bidScore(p.bid,p.won);});
+          if(G.round>=5){G.phase='over';}
+          else{G.round++;G.deck=bidDeck();let t;do{t=G.deck.pop();}while(t.kind!=='n');G.trump=t.suit;dealBidTrick(G);}
+        }
+      } else G.turn=1-playerIdx;
+      return '';
+    }
+    return 'Game not in a playable phase.';
+  }
+  if(G.game==='meld'){
+    const wild=G.round+2;
+    if(G.phase==='draw'){
+      if(move.action==='deck'){me.hand.push(G.deck.pop());}
+      else if(move.action==='discard'){if(!G.discard.length)return 'No discard pile card.';me.hand.push(G.discard.pop());}
+      else return 'Draw first.';
+      G.phase='discard';return '';
+    }
+    if(G.phase==='discard'){
+      if(move.action==='meld'){
+        const cards=move.cardIds.map(id=>me.hand.find(c=>c.id===id)).filter(Boolean);
+        if(cards.length!==move.cardIds.length)return 'Meld cards not in hand.';
+        if(!isMeld(cards,wild))return 'Those cards do not form a meld.';
+        me.melds.push(cards);me.meldedIds.push(...cards.map(c=>c.id));
+        me.hand=me.hand.filter(c=>!move.cardIds.includes(c.id));
+        return '';
+      }
+      if(move.action==='goout'){
+        const disc=me.hand.find(c=>c.id===move.cardId);if(!disc)return 'Discard card not in hand.';
+        const rest=me.hand.filter(c=>c.id!==move.cardId);
+        if(!canPartition(rest,wild))return 'Your remaining hand does not form complete melds, so you cannot go out.';
+        G.discard.push(disc);me.hand=rest;me.melds.push(rest);me.meldedIds.push(...rest.map(c=>c.id));
+        G.wentOut=playerIdx;G.finalTurn=1-playerIdx;G.turn=1-playerIdx;G.phase='draw';return '';
+      }
+      if(move.action==='discard'){
+        const card=me.hand.find(c=>c.id===move.cardId);if(!card)return 'Discard card not in hand.';
+        me.hand=me.hand.filter(c=>c.id!==card.id);G.discard.push(card);
+        if(G.finalTurn===playerIdx){
+          // round over: score deadwood
+          G.players.forEach(p=>{p.score+=deadwood(p.hand,p.meldedIds,wild);});
+          if(G.round>=5)G.phase='over';
+          else{G.round++;G.deck=meldDeck();dealMeld(G);}
+        } else {G.turn=1-playerIdx;G.phase='draw';}
+        return '';
+      }
+      return 'Draw, meld, go out, or discard.';
+    }
+    return 'Game not in a playable phase.';
+  }
+  return 'Unknown game.';
+}
+
+/* ---------- browser UI (only when document exists) ---------- */
+if(typeof document!=='undefined'){
+document.addEventListener('DOMContentLoaded',()=>{
+  const $=id=>document.getElementById(id);
+  const status=t=>{$('connstatus').textContent=t;};
+  function genCode(){const L='ABCDEFGHJKLMNPQRSTUVWXYZ';let s='';for(let i=0;i<5;i++)s+=L[Math.floor(Math.random()*L.length)];return s;}
+  function showLobby(){ $('lobby').style.display='block'; $('players').textContent='Players: '+myName+(window._oppName?' and '+window._oppName:' (waiting for your friend…)'); $('roominfo').textContent='Room code: '+roomCode+' — share this code with your friend.'; }
+  function onConnOpen(){
+    status(isHost?'Room open. Waiting for your friend to join…':'Connected to the room.');
+    showLobby();
+  }
+  function onData(d){
+    if(d.type==='join'){window._oppName=d.name;chatAdd(d.name+' joined the room.');showLobby();if(isHost)sendToPeer({type:'welcome',name:myName});}
+    if(d.type==='welcome'){window._oppName=d.name;showLobby();}
+    if(d.type==='chat')chatAdd(d.name+': '+d.text);
+    if(d.type==='state'){G=d.state;renderGame(G);}
+    if(d.type==='move'&&isHost){const err=hostApplyMove(1,d.move);if(err)sendToPeer({type:'error',text:err});else broadcastState();}
+    if(d.type==='game'&&isHost){hostStartGame(d.game);}
+    if(d.type==='error')status('Move rejected: '+d.text);
+  }
+  $('createBtn').onclick=()=>{
+    if(typeof Peer==='undefined'){status('Peer connection library did not load. Check your connection and reload.');return;}
+    myName=$('myname').value.trim()||'Player';isHost=true;myIdx=0;roomCode=genCode();
+    peer=new Peer('playhaven-'+roomCode.toLowerCase());
+    peer.on('open',()=>{status('Room created. Code: '+roomCode+'. Share it with your friend.');showLobby();});
+    peer.on('connection',c=>{conn=c;conn.on('open',onConnOpen);conn.on('data',onData);});
+    peer.on('error',e=>status('Connection problem: '+e.type+'. Try creating a new room.'));
+  };
+  $('joinBtn').onclick=()=>{
+    if(typeof Peer==='undefined'){status('Peer connection library did not load. Check your connection and reload.');return;}
+    myName=$('myname').value.trim()||'Player';isHost=false;myIdx=1;roomCode=$('joincode').value.trim().toUpperCase();
+    if(roomCode.length!==5){status('Enter the 5-letter room code.');return;}
+    peer=new Peer();
+    peer.on('open',()=>{conn=peer.connect('playhaven-'+roomCode.toLowerCase());conn.on('open',()=>{onConnOpen();sendToPeer({type:'join',name:myName});});conn.on('data',onData);});
+    peer.on('error',e=>status('Could not join that room: '+e.type+'. Check the code and try again.'));
+  };
+  $('startBtn').onclick=()=>{
+    const g=$('gameSel').value;
+    if(g==='bidtrick'||g==='meld'){
+      if(!conn){status('Create or join a room first.');return;}
+      if(isHost)hostStartGame(g);else sendToPeer({type:'game',game:g});
+    } else {
+      // local games: render in this browser only
+      G={game:g,local:true,players:[{name:myName,score:0}]};
+      renderGame(G);
+    }
+  };
+  $('chatsend').onclick=()=>{
+    const t=$('chatmsg').value.trim();if(!t)return;
+    chatAdd(myName+': '+t);sendToPeer({type:'chat',name:myName,text:t});$('chatmsg').value='';
+  };
+  $('demobtn').onclick=()=>{
+    try{localStorage.setItem('playhaven-demo',JSON.stringify({age:$('ageband').value,region:$('region').value}));$('demostatus').textContent='Saved in this browser only. Thank you.';}catch(e){$('demostatus').textContent='Could not save in this browser.';}
+  };
+  $('democlear').onclick=()=>{try{localStorage.removeItem('playhaven-demo');}catch(e){}$('demostatus').textContent='Cleared.';};
+  window._sendMove=function(move){
+    if(isHost){const err=hostApplyMove(0,move);if(err)status('Move rejected: '+err);else broadcastState();}
+    else sendToPeer({type:'move',move});
+  };
+  window._renderGame=renderGame;
+  function cardLabel(c){
+    if(c.kind==='W')return 'Star';if(c.kind==='J')return 'Fool';if(c.kind==='Joker')return 'Joker';
+    const r={11:'J',12:'Q',13:'K',14:'A'}[c.rank]||c.rank;return r+c.suit;
+  }
+  function renderGame(s){
+    if(!s)return;
+    $('gamebox').style.display='block';$('gamelog').textContent='';
+    const area=$('gamearea');area.innerHTML='';
+    if(s.local){renderLocal(s,area);return;}
+    const me=s.players[myIdx], opp=s.players[1-myIdx];
+    $('gametitle').textContent=(s.game==='bidtrick'?'Bid and Trick':'Five Suit Meld')+' — Round '+s.round+' of 5';
+    const info=document.createElement('p');
+    info.textContent='You: '+me.name+' — score '+me.score+' | '+opp.name+' — score '+opp.score+' | Turn: '+(s.turn===myIdx?'You':opp.name)+' | Phase: '+s.phase;
+    if(s.game==='bidtrick')info.textContent+=' | Trump: '+s.trump;
+    if(s.game==='meld')info.textContent+=' | Wild: '+(s.round+2)+' | Top discard: '+(s.discard&&s.discard.length?cardLabel(s.discard[s.discard.length-1]):'—')+' | Opponent cards: '+opp.handCount;
+    area.appendChild(info);
+    if(s.game==='bidtrick'&&s.phase==='bid'&&s.turn===myIdx){
+      const p=document.createElement('p');p.textContent='Your bid (0 to '+s.round+'): ';
+      for(let b=0;b<=s.round;b++){const bt=document.createElement('button');bt.textContent=b;bt.onclick=()=>window._sendMove({bid:b});p.appendChild(bt);}
+      area.appendChild(p);
+    }
+    if(s.game==='meld'&&s.turn===myIdx&&s.phase==='draw'){
+      const p=document.createElement('p');
+      const d1=document.createElement('button');d1.textContent='Draw from deck';d1.onclick=()=>window._sendMove({action:'deck'});
+      const d2=document.createElement('button');d2.textContent='Take discard';d2.onclick=()=>window._sendMove({action:'discard'});
+      p.appendChild(d1);p.appendChild(d2);area.appendChild(p);
+    }
+    const hand=document.createElement('div');
+    (me.hand||[]).forEach(c=>{
+      const b=document.createElement('button');b.className='cardbtn';b.textContent=cardLabel(c);
+      b.onclick=()=>{
+        if(s.game==='bidtrick'&&s.phase==='play'&&s.turn===myIdx)window._sendMove({cardId:c.id});
+        else if(s.game==='meld'&&s.phase==='discard'&&s.turn===myIdx){
+          if(confirm('Discard this card? OK = discard, Cancel = keep selecting for a meld.'))window._sendMove({action:'discard',cardId:c.id});
+        }
+        b.classList.toggle('sel');
+      };
+      hand.appendChild(b);
+    });
+    area.appendChild(hand);
+    if(s.game==='meld'&&s.turn===myIdx&&s.phase==='discard'){
+      const p=document.createElement('p');
+      const meld=document.createElement('button');meld.textContent='Lay down selected cards as a meld';
+      meld.onclick=()=>{const ids=[...hand.querySelectorAll('.sel')].map((_,i)=>null);
+        const selCards=[...hand.children].filter(el=>el.classList.contains('sel')).map(el=>el.textContent);
+        // map labels back to ids by matching hand order
+        const chosen=[];[...hand.children].forEach((el,i)=>{if(el.classList.contains('sel'))chosen.push(me.hand[i].id);});
+        window._sendMove({action:'meld',cardIds:chosen});};
+      const go=document.createElement('button');go.textContent='Go out (discard one card first — use Discard after selecting it in the prompt)';
+      go.onclick=()=>{const chosen=[];[...hand.children].forEach((el,i)=>{if(el.classList.contains('sel'))chosen.push(me.hand[i].id);});
+        if(chosen.length!==1){alert('Select exactly one card to discard when going out.');return;}
+        window._sendMove({action:'goout',cardId:chosen[0]});};
+      p.appendChild(meld);p.appendChild(go);area.appendChild(p);
+      const hint=document.createElement('p');hint.className='small';hint.textContent='Tap cards to select them, then lay down a meld, or select one card and tap Go out. To discard normally, tap a card and confirm the discard prompt.';
+      area.appendChild(hint);
+    }
+    if(s.phase==='over'){
+      const w=s.players[0].score<s.players[1].score?0:1;
+      if(s.game==='meld'){const win=s.players[0].score<s.players[1].score?0:1;const p=document.createElement('p');p.textContent='Game over. Lowest deadwood wins: '+s.players[win].name+' wins!';area.appendChild(p);}
+      else{const p=document.createElement('p');p.textContent='Game over. Highest score wins: '+s.players[w].name+' wins!';area.appendChild(p);}
+    }
+  }
+  function renderLocal(s,area){
+    $('gametitle').textContent=({bidtrick:'Bid and Trick',meld:'Five Suit Meld',tictactoe:'Tic-Tac-Toe',connect4:'Four in a Row',blackjack:'Blackjack',memory:'Memory Match'}[s.game]||s.game)+' — in this browser only';
+    const p=document.createElement('p');
+    if(s.game==='tictactoe'){
+      s.board=s.board||Array(9).fill('');
+      const grid=document.createElement('div');
+      s.board.forEach((v,i)=>{const b=document.createElement('button');b.className='cardbtn';b.textContent=v||'·';b.onclick=()=>{
+        if(s.board[i]||s.winner)return;s.board[i]='X';
+        const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        const win=lines.find(l=>s.board[l[0]]&&s.board[l[0]]===s.board[l[1]]&&s.board[l[1]]===s.board[l[2]]);
+        if(win)s.winner='You win!';else if(!s.board.includes(''))s.winner='Draw.';
+        else{const empty=s.board.map((v,j)=>v?'':j).filter(v=>v!=='');const pick=empty[Math.floor(Math.random()*empty.length)];s.board[pick]='O';
+          const win2=lines.find(l=>s.board[l[0]]&&s.board[l[0]]===s.board[l[1]]&&s.board[l[1]]===s.board[l[2]]);if(win2)s.winner='Computer wins.';else if(!s.board.includes(''))s.winner='Draw.';}
+        renderGame(s);};grid.appendChild(b);if(i%3===2)grid.appendChild(document.createElement('br'));});
+      area.appendChild(grid);
+      const r=document.createElement('p');r.textContent=s.winner||'Your turn: you are X.';area.appendChild(r);
+      const rb=document.createElement('button');rb.textContent='New game';rb.onclick=()=>{G.board=Array(9).fill('');G.winner='';renderGame(G);};area.appendChild(rb);
+    } else if(s.game==='connect4'){
+      s.board=s.board||Array.from({length:6},()=>Array(7).fill(''));
+      const grid=document.createElement('div');
+      for(let r=0;r<6;r++)for(let c=0;c<7;c++){const b=document.createElement('button');b.className='cardbtn';b.textContent=s.board[r][c]||'·';
+        b.onclick=()=>{if(s.winner)return;let row=-1;for(let rr=5;rr>=0;rr--)if(!s.board[rr][c]){row=rr;break;}if(row<0)return;s.board[row][c]='X';
+          const win4=(bd,pl)=>{for(let rr=0;rr<6;rr++)for(let cc=0;cc<7;cc++){if(bd[rr][cc]!==pl)continue;if(cc+3<7&&bd[rr][cc+1]===pl&&bd[rr][cc+2]===pl&&bd[rr][cc+3]===pl)return true;if(rr+3<6&&bd[rr+1][cc]===pl&&bd[rr+2][cc]===pl&&bd[rr+3][cc]===pl)return true;if(rr+3<6&&cc+3<7&&bd[rr+1][cc+1]===pl&&bd[rr+2][cc+2]===pl&&bd[rr+3][cc+3]===pl)return true;if(rr+3<6&&cc-3>=0&&bd[rr+1][cc-1]===pl&&bd[rr+2][cc-2]===pl&&bd[rr+3][cc-3]===pl)return true;}return false;};
+          if(win4(s.board,'X'))s.winner='You win!';else{let crow=-1,ccol=Math.floor(Math.random()*7);for(let rr=5;rr>=0;rr--)if(!s.board[rr][ccol]){crow=rr;break;}if(crow>=0){s.board[crow][ccol]='O';if(win4(s.board,'O'))s.winner='Computer wins.';}}
+          renderGame(s);};grid.appendChild(b);if(c===6)grid.appendChild(document.createElement('br'));}
+      area.appendChild(grid);
+      const r=document.createElement('p');r.textContent=s.winner||'Your turn: you are X. Tap a column.';area.appendChild(r);
+      const rb=document.createElement('button');rb.textContent='New game';rb.onclick=()=>{G.board=Array.from({length:6},()=>Array(7).fill(''));G.winner='';renderGame(G);};area.appendChild(rb);
+    } else if(s.game==='blackjack'){
+      if(!s.player){const deck=shuffle([2,3,4,5,6,7,8,9,10,10,10,10,11].flatMap(v=>Array(4).fill(v)));s.player=[deck.pop(),deck.pop()];s.dealer=[deck.pop(),deck.pop()];s.deck=deck;s.done=false;}
+      const val=h=>{let t=h.reduce((a,b)=>a+b,0),aces=h.filter(v=>v===11).length;while(t>21&&aces){t-=10;aces--;}return t;};
+      const p2=document.createElement('p');p2.textContent='You: '+s.player.join(', ')+' = '+val(s.player)+' | Dealer: '+(s.done?s.dealer.join(', ')+' = '+val(s.dealer):s.dealer[0]+', ?');area.appendChild(p2);
+      if(!s.done){
+        const hit=document.createElement('button');hit.textContent='Hit';hit.onclick=()=>{s.player.push(s.deck.pop());if(val(s.player)>21)s.done=true;s.result=val(s.player)>21?'Bust — dealer wins.':'';renderGame(s);};
+        const stand=document.createElement('button');stand.textContent='Stand';stand.onclick=()=>{while(val(s.dealer)<17)s.dealer.push(s.deck.pop());const pv=val(s.player),dv=val(s.dealer);s.result=dv>21?'Dealer busts — you win!':pv>dv?'You win!':pv<dv?'Dealer wins.':'Push.';s.done=true;renderGame(s);};
+        area.appendChild(hit);area.appendChild(stand);
+      }
+      if(s.result){const r=document.createElement('p');r.textContent=s.result;area.appendChild(r);}
+      const rb=document.createElement('button');rb.textContent='New hand';rb.onclick=()=>{delete G.player;delete G.dealer;delete G.done;delete G.result;renderGame(G);};area.appendChild(rb);
+    } else if(s.game==='memory'){
+      if(!s.cards){const vals=['A','B','C','D','E','F','G','H'];s.cards=shuffle([...vals,...vals]).map(v=>({v,up:false,done:false}));s.flipped=[];s.moves=0;}
+      const grid=document.createElement('div');
+      s.cards.forEach((c,i)=>{const b=document.createElement('button');b.className='cardbtn';b.textContent=c.up||c.done?c.v:'?';
+        b.onclick=()=>{if(c.up||c.done||s.flipped.length>=2)return;c.up=true;s.flipped.push(i);
+          if(s.flipped.length===2){s.moves++;const [a,bb]=s.flipped;if(s.cards[a].v===s.cards[bb].v){s.cards[a].done=s.cards[bb].done=true;s.flipped=[];}else{setTimeout(()=>{s.cards[a].up=s.cards[bb].up=false;s.flipped=[];renderGame(s);},700);}}
+          renderGame(s);};grid.appendChild(b);if(i%4===3)grid.appendChild(document.createElement('br'));});
+      area.appendChild(grid);
+      const r=document.createElement('p');r.textContent='Moves: '+s.moves+' | Pairs found: '+s.cards.filter(c=>c.done).length/2+' of 8';area.appendChild(r);
+    }
+  }
+});
+}
+</script></body></html>
