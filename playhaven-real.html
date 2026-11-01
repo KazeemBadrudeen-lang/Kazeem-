@@ -145,7 +145,16 @@ function viewFor(state,idx){
   v.players=v.players.map((p,i)=>({...p,hand:i===idx?p.hand:[],handCount:p.hand.length}));
   return v;
 }
-function broadcastState(){if(!isHost||!G)return;sendToPeer({type:'state',state:viewFor(G,1)});renderGame(viewFor(G,0));}
+function broadcastState(){
+  if(!isHost||!G)return;
+  sendToPeer({type:'state',state:viewFor(G,1)});
+  try{
+    if(typeof window!=='undefined'&&window._renderGame)window._renderGame(viewFor(G,0));
+    else if(typeof renderGame==='function')renderGame(viewFor(G,0));
+  }catch(e){
+    if(typeof document!=='undefined'){const gs=document.getElementById('gamestatus');if(gs)gs.textContent='Could not show the game board: '+e.message;}
+  }
+}
 function startBidTrick(hostState){
   const deck=bidDeck();let trumpCard;
   do{trumpCard=deck.pop();}while(trumpCard.kind!=='n');
@@ -299,7 +308,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(d.type==='join'){window._oppName=d.name;chatAdd(d.name+' joined the room.');showLobby();updateStart();if(isHost)sendToPeer({type:'welcome',name:myName});}
     if(d.type==='welcome'){window._oppName=d.name;showLobby();updateStart();}
     if(d.type==='chat')chatAdd(d.name+': '+d.text);
-    if(d.type==='state'){G=d.state;renderGame(G);}
+    if(d.type==='state'){G=d.state;if(pendingStartTimer){clearTimeout(pendingStartTimer);pendingStartTimer=null;$('gamestatus').textContent='Game started.';}renderGame(G);}
     if(d.type==='move'&&isHost){const err=hostApplyMove(1,d.move);if(err)sendToPeer({type:'error',text:err});else broadcastState();}
     if(d.type==='game'&&isHost){hostStartGame(d.game);}
     if(d.type==='error')status('Move rejected: '+d.text);
@@ -341,12 +350,24 @@ document.addEventListener('DOMContentLoaded',()=>{
     });
     peer.on('disconnected',()=>{status('Lost connection to the signalling server. Reload the page and try Join room again.');});
   };
+  let pendingStartTimer=null;
   $('startBtn').onclick=()=>{
     const g=$('gameSel').value;
     if(g==='bidtrick'||g==='meld'){
-      if(!conn){status('Create or join a room first.');$('gamestatus').textContent='Create or join a room first.';return;}
       if(!hasOpponent()){$('gamestatus').textContent='Waiting for a second player to join. Start game is disabled until your friend joins.';return;}
-      if(isHost)hostStartGame(g);else sendToPeer({type:'game',game:g});
+      if(!conn){status('Create or join a room first.');$('gamestatus').textContent='Create or join a room first.';return;}
+      $('gamestatus').textContent='Starting '+(g==='bidtrick'?'Bid and Trick':'Five Suit Meld')+'…';
+      try{
+        if(isHost){hostStartGame(g);$('gamestatus').textContent='Game started.';}
+        else{
+          sendToPeer({type:'game',game:g});
+          if(pendingStartTimer)clearTimeout(pendingStartTimer);
+          pendingStartTimer=setTimeout(()=>{
+            if(!$('gamebox').style.display||$('gamebox').style.display==='none')
+              $('gamestatus').textContent='Host did not start the game. Ask the host to press Start game.';
+          },5000);
+        }
+      }catch(e){$('gamestatus').textContent='Start failed: '+e.message+'. Try Start game again.';}
     } else {
       // local games: render in this browser only
       G={game:g,local:true,players:[{name:myName,score:0}]};
@@ -363,6 +384,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   };
   $('democlear').onclick=()=>{try{localStorage.removeItem('playhaven-demo');}catch(e){}$('demostatus').textContent='Cleared.';};
   updateStart();
+  if(window.addEventListener)window.addEventListener('error',e=>{const gs=$('gamestatus');if(gs&&$('lobby').style.display!=='none')gs.textContent='Something went wrong: '+(e.message||'error')+'. Try Start game again.';});
   window._sendMove=function(move){
     if(isHost){const err=hostApplyMove(0,move);if(err)status('Move rejected: '+err);else broadcastState();}
     else sendToPeer({type:'move',move});
